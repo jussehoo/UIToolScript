@@ -17,7 +17,8 @@ public class UIManager : MonoBehaviour {
 	public AMenu CreateMenu(Dir anchor)
 	{
 		AMenu m = Instantiate(MenuPrefab).GetComponent<AMenu>();
-		m.Initialize(this, anchor);
+		m.main.anchor = Dir.CENTER;
+		m.Initialize(this);
 		if (menus.Size() > 0) m.SetLayerOrder(menus.Last().GetLayerOrder() + 1);
 		else m.SetLayerOrder(1);
 		menus.AddLast(m);
@@ -45,6 +46,7 @@ public class UIManager : MonoBehaviour {
 		// check if it's a pop-up
 		if (popups.Size() > 0 && popups.First() == m)
 		{
+			Destroy(popups.First());
 			popups.RemoveFirst();
 			if (popups.Size() > 0)
 			{
@@ -55,6 +57,7 @@ public class UIManager : MonoBehaviour {
 		var it = menus.Iterator(); // remove menu from the list
 		while (it.Next()) {
 			if (it.Value == m) {
+				Destroy(it.Value);
 				menus.Remove(it);
 				return;
 		}   }
@@ -63,6 +66,13 @@ public class UIManager : MonoBehaviour {
 	public void CloseAll()
 	{
 		var it = menus.Iterator(); // remove menu from the list
+		while (it.Next())
+		{
+			it.Value.SetClosed();
+			Destroy(it.Value.gameObject);
+			it.Remove();
+		}
+		it = popups.Iterator(); // remove menu from the list
 		while (it.Next())
 		{
 			it.Value.SetClosed();

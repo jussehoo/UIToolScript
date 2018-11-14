@@ -4,7 +4,12 @@ using UnityEngine;
 
 public class UIObject : MonoBehaviour
 {
-	private Vector2 relative; // position, relative container
+	/*
+	 * Creating a new object template:
+	 *	- Set pivot point to top left corner
+	*/
+
+	private Vector2 relative; // position, relative to container
 
 	virtual public float GetWidth()
 	{

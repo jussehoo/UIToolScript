@@ -9,15 +9,11 @@ public class AMenu : MonoBehaviour {
 
 	public GameObject BackBlocker;
 
-		//ButtonTmp,
-		//TextTmp,
-		//ImageTmp;
+	public const float REF_WIDTH = 768f;
 
-	public const float REF_WIDTH = 480f;
+	public UIContainer main;
+	private MList<UIContainer> containers = new MList<UIContainer>();
 
-	UIContainer main;
-
-	public Dir anchor = Dir.TOP_LEFT;
 	public Vector2 origin = new Vector2(0, 0);
 	private bool closeOnBlockerClicked;
 	private UIManager manager;
@@ -27,17 +23,22 @@ public class AMenu : MonoBehaviour {
 	void Awake ()
 	{
 		BackBlocker.SetActive(false);
-		//ButtonTmp.SetActive(false);
-		//TextTmp.SetActive(false);
-		//ImageTmp.SetActive(false);
+		main = AddContainer("MAIN", Dir.TOP_LEFT);
 
-		main = gameObject.AddComponent<UIContainer>();
 	}
-	
-	public void Initialize(UIManager m, Dir _anchor)
+
+	public UIContainer AddContainer(string name, Dir anchor)
+	{
+		UIContainer c = gameObject.AddComponent<UIContainer>();
+		containers.AddLast(c);
+		c.name = name;
+		c.anchor = anchor;
+		return c;
+	}
+
+	public void Initialize(UIManager m)
 	{
 		manager = m;
-		anchor = _anchor;
 	}
 
 	void OnDestroy()
@@ -87,37 +88,40 @@ public class AMenu : MonoBehaviour {
 		UT.trap();
 	}
 
-	public void AddObject(UIObject objectTemplate, Dir dir)
+	public void AddObject(UIObject newObject, UIContainer container, Dir dir)
 	{
-		InitializeNewObject(Instantiate(objectTemplate), dir);
+		InitializeNewObject(transform, container, newObject, dir);
 	}
 
-	private void InitializeNewObject(UIObject obj, Dir dir)
+	public void AddObject(UIObject newObject, Dir dir)
+	{
+		InitializeNewObject(transform, main, newObject, dir);
+	}
+
+	private static void InitializeNewObject(Transform parent, UIContainer container, UIObject obj, Dir dir)
 	{
 		GameObject item = obj.gameObject;
 		item.SetActive(true);
-		item.transform.SetParent(transform);
+		item.transform.SetParent(parent);
 		item.transform.localScale = new Vector3(1, 1, 1);
 
-		UIObject buttonObject = item.AddComponent<UIObject>();
+		UT.print("Init. size: " + obj.GetWidth() + ", " + obj.GetHeight());
 
-		UT.print("Init. size: " + buttonObject.GetWidth() + ", " + buttonObject.GetHeight());
+		container.Add(obj, container.anchor, dir); // add new item after previous to 'dir' direction.
 
-		main.Add(buttonObject, anchor, dir); // add new item after previous to 'dir' direction.
-
-		if (anchor == Dir.CENTER)
+		if (container.anchor == Dir.CENTER)
 		{
-			Vector2 offset = new Vector2(main.bounds.width / 2f, main.bounds.height / 2f);
-			main.SetScreenPosition(getScreenPosition(0, 0) + offset);
+			Vector2 offset = new Vector2(-container.GetWidth() / 2f, container.GetHeight() / 2f);
+			container.SetScreenPosition(getScreenPosition(0, 0) + offset);
 		}
-		else if (anchor == Dir.TOP_LEFT)
+		else if (container.anchor == Dir.TOP_LEFT)
 		{
-			main.SetScreenPosition(getScreenPosition(-.5f, .5f));
+			container.SetScreenPosition(getScreenPosition(-.5f, .5f));
 		}
-		else if (anchor == Dir.BOTTOM_LEFT)
+		else if (container.anchor == Dir.BOTTOM_LEFT)
 		{
-			Vector2 offset = new Vector2(0f, main.bounds.height);
-			main.SetScreenPosition(getScreenPosition(-.5f, -.5f) + offset);
+			Vector2 offset = new Vector2(0f, container.GetHeight());
+			container.SetScreenPosition(getScreenPosition(-.5f, -.5f) + offset);
 		}
 		else
 		{

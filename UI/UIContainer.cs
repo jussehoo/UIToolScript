@@ -5,10 +5,11 @@ using UnityEngine;
 
 public class UIContainer : UIObject
 {
-	public MList<UIObject> list = new MList<UIObject>();
+	public string ContainerName;
 
-	public Rect bounds;
-
+	public Dir anchor = Dir.TOP_LEFT;
+	private MList<UIObject> list = new MList<UIObject>();
+	private Rect bounds;
 	Vector2 origin = Vector2.zero;
 
 	override public float GetWidth()
@@ -27,9 +28,8 @@ public class UIContainer : UIObject
 		}
 	}
 
-	public void Add(UIObject buttonObject, Dir parentAnchor, Dir dir)
+	public void Add(UIObject newObj, Dir parentAnchor, Dir dir)
 	{
-
 		Vector2 rel = Vector2.zero;
 
 		if (list.Size() > 0)
@@ -41,7 +41,7 @@ public class UIContainer : UIObject
 					rel = last.GetRelative() + new Vector2(last.GetWidth(), 0);
 					break;
 				case Dir.BELOW:
-					rel = new Vector2(origin.x - buttonObject.GetWidth() / 2f, last.GetRelative().y - last.GetHeight());
+					rel = new Vector2(origin.x, last.GetRelative().y - last.GetHeight());
 					break;
 				default:
 					UT.assert(false, "button: invalid direction");
@@ -50,11 +50,13 @@ public class UIContainer : UIObject
 		}
 		else if (parentAnchor == Dir.CENTER)
 		{
-			rel = new Vector2(-buttonObject.GetWidth() / 2f, 0);
+			rel = new Vector2(0, 0);
 		}
 
-		buttonObject.SetRelative(rel);
-		list.AddLast(buttonObject);
+		UT.print("REL: " + rel);
+
+		newObj.SetRelative(rel);
+		list.AddLast(newObj);
 
 		UpdateBounds();
 

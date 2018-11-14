@@ -142,6 +142,10 @@ public class MList<T>
 		it.Next();
 		it.InsertBefore(t);
 	}
+	public void Add(T t)
+	{
+		AddLast(t);
+	}
 	public void AddLast(T t)
 	{
 		MListNode<T> node = new MListNode<T> { Value = t };
