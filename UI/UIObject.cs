@@ -10,14 +10,26 @@ public class UIObject : MonoBehaviour
 	*/
 
 	private Vector2 relative; // position, relative to container
+	private Vector2 offset;
+	private Vector2 size;
+
+	private void Awake()
+	{
+		var rt = GetComponent<RectTransform>();
+		size.x = rt.rect.width;
+		size.y = rt.rect.height;
+
+		offset.x = rt.pivot.x * size.x;
+		offset.y = (rt.pivot.y - 1f) * size.y;
+	}
 
 	virtual public float GetWidth()
 	{
-		return GetComponent<RectTransform>().rect.width;
+		return size.x;
 	}
 	virtual public float GetHeight()
 	{
-		return GetComponent<RectTransform>().rect.height;
+		return size.y;
 	}
 	virtual public void SetScreenPosition(Vector2 p)
 	{
@@ -34,6 +46,10 @@ public class UIObject : MonoBehaviour
 	public Vector2 GetRelative()
 	{
 		return relative;
+	}
+	public Vector2 GetRelativeWithOffset()
+	{
+		return relative + offset;
 	}
 	public Rect GetRelativeRect()
 	{

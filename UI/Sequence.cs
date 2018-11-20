@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
-public class Sequence
+public class Sequence : MonoBehaviour
 {
 	// define animation sequence
 
@@ -18,7 +19,7 @@ public class Sequence
 		protected float time;
 		public IClip(Sequence seq, float time) { this.seq = seq; this.time = time; }
 		abstract public void Init();
-		abstract public bool Update();
+		abstract public bool Step();
 		protected bool UpdateTimer()
 		{
 			time -= Time.deltaTime;
@@ -37,7 +38,7 @@ public class Sequence
 		{
 			speed = (Mathf.Deg2Rad * Vector3.Angle(seq.transform.forward, targetDir)) / time;
 		}
-		public override bool Update()
+		public override bool Step()
 		{
 			if (UpdateTimer())
 			{
@@ -63,9 +64,10 @@ public class Sequence
 			velocity = targetPosition - seq.transform.position;
 			velocity /= time;
 		}
-		public override bool Update()
+		public override bool Step()
 		{
-			if (UpdateTimer()) {
+			if (UpdateTimer())
+			{
 				// update position
 				seq.transform.position += velocity * Time.deltaTime;
 				UT.print("MoveTo: " + seq.transform.position);
@@ -75,10 +77,38 @@ public class Sequence
 			return false;
 		}
 	}
+	private class LocalScaling : IClip
+	{
+		float start, end, velocity, currentScale;
+		public LocalScaling(Sequence seq, float _from, float _to, float time) : base(seq, time)
+		{
+			start = _from;
+			end = _to;
+		}
+		public override void Init()
+		{
+			velocity = (end - start) / time;
+			currentScale = start;
+		}
+		public override bool Step()
+		{
+			if (UpdateTimer())
+			{
+				// update position
+				currentScale += Time.deltaTime * velocity;
+				seq.transform.localScale = new Vector3(currentScale, currentScale, currentScale);
+				//UT.print("MoveTo: " + seq.transform.position);
+				return true;
+			}
+			seq.transform.localScale = new Vector3(end, end, end);
+			return false;
+		}
+	}
 
 	MList<IClip> list = new MList<IClip>();
-	public Transform transform;
 	private IClip current;
+	private bool destroyWhenFinished = true;
+
 
 	public void AddRotateTowards(Vector3 targetRotation, float time)
 	{
@@ -90,12 +120,22 @@ public class Sequence
 		list.AddLast(new MoveTo(this, targetPosition, time));
 	}
 
-	public Sequence(Transform tr)
+	public void AddLocalScaling(float from, float to, float time)
 	{
-		transform = tr;
+		list.AddLast(new LocalScaling(this, from, to, time));
+	}
+	private void Start()
+	{
+		Step();
 	}
 
-	public bool Update()
+	void Update()
+	{
+		Step();
+		if (destroyWhenFinished && list.Size() == 0) Destroy(this);
+	}
+
+	private void Step()
 	{
 		float time = Time.deltaTime;
 		if (current == null)
@@ -103,11 +143,10 @@ public class Sequence
 			current = list.First();
 			current.Init();
 		}
-		if (!current.Update())
+		if (!current.Step())
 		{
 			list.RemoveFirst();
 			current = null;
 		}
-		return list.Size() > 0;
 	}
 }

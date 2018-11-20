@@ -24,7 +24,7 @@ public class UIContainer : UIObject
 	{
 		foreach (UIObject o in list)
 		{
-			o.SetScreenPosition(p + o.GetRelative());
+			o.SetScreenPosition(p + o.GetRelativeWithOffset());
 		}
 	}
 
