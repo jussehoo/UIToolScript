@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class AMenu : MonoBehaviour {
 
-	public GameObject BackBlocker;
+	public GameObject BackBlocker, FrontBlocker;
 
 	public const float REF_WIDTH = 768f;
 
@@ -15,7 +15,8 @@ public class AMenu : MonoBehaviour {
 	private MList<UIContainer> containers = new MList<UIContainer>();
 
 	public Vector2 origin = new Vector2(0, 0);
-	private bool closeOnBlockerClicked;
+	private bool closeMenuOnBackBlockerOnClick, disableFrontBlockerOnClick;
+	private Action frontBlockerAction;
 	private UIManager manager;
 
 	private bool closed = false;
@@ -23,6 +24,7 @@ public class AMenu : MonoBehaviour {
 	void Awake ()
 	{
 		BackBlocker.SetActive(false);
+		FrontBlocker.SetActive(false);
 		main = AddContainer("MAIN", Dir.TOP_LEFT);
 
 	}
@@ -31,7 +33,7 @@ public class AMenu : MonoBehaviour {
 	{
 		UIContainer c = gameObject.AddComponent<UIContainer>();
 		containers.AddLast(c);
-		c.name = name;
+		c.ContainerName = name;
 		c.anchor = anchor;
 		return c;
 	}
@@ -72,37 +74,55 @@ public class AMenu : MonoBehaviour {
 		
 	}
 
-	public void BlockerClicked()
+	public void BackBlockerClicked()
 	{
-		if (closeOnBlockerClicked) Close();
+		if (closeMenuOnBackBlockerOnClick) Close();
 	}
 
-	public void ActivateBackBlocker(bool _closeOnBlockerClicked)
+	public void FrontBlockerClicked()
+	{
+		if (disableFrontBlockerOnClick) FrontBlocker.SetActive(false);
+		if (frontBlockerAction != null)
+		{
+			frontBlockerAction.Invoke();
+			frontBlockerAction = null;
+		}
+	}
+
+	public void ActivateBackBlocker(bool _closeMenuOnBackBlockerClick)
 	{
 		BackBlocker.SetActive(true);
-		closeOnBlockerClicked = _closeOnBlockerClicked;
+		closeMenuOnBackBlockerOnClick = _closeMenuOnBackBlockerClick;
 	}
 
-	public void ActivateFrontBlocker(Action act)
+	public void ActivateFrontBlocker(Action act, bool disableOnClick)
 	{
-		UT.trap();
+		FrontBlocker.SetActive(true);
+		disableFrontBlockerOnClick = disableOnClick;
+		frontBlockerAction = act;
+	}
+	public void DisableFrontBlocker()
+	{
+		FrontBlocker.SetActive(false);
+		frontBlockerAction = null;
 	}
 
 	public void AddObject(UIObject newObject, UIContainer container, Dir dir)
 	{
-		InitializeNewObject(transform, container, newObject, dir);
+		InitializeNewObject(transform, FrontBlocker.transform.GetSiblingIndex(), container, newObject, dir);
 	}
 
 	public void AddObject(UIObject newObject, Dir dir)
 	{
-		InitializeNewObject(transform, main, newObject, dir);
+		InitializeNewObject(transform, FrontBlocker.transform.GetSiblingIndex(), main, newObject, dir);
 	}
 
-	private static void InitializeNewObject(Transform parent, UIContainer container, UIObject obj, Dir dir)
+	private static void InitializeNewObject(Transform parent, int siblingIndex, UIContainer container, UIObject obj, Dir dir)
 	{
 		GameObject item = obj.gameObject;
 		item.SetActive(true);
 		item.transform.SetParent(parent);
+		item.transform.SetSiblingIndex(siblingIndex);
 		item.transform.localScale = new Vector3(1, 1, 1);
 
 		UT.print("Init. size: " + obj.GetWidth() + ", " + obj.GetHeight());
