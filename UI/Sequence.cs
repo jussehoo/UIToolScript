@@ -140,6 +140,7 @@ public class Sequence : MonoBehaviour
 		float time = Time.deltaTime;
 		if (current == null)
 		{
+			if (list.Size() == 0) return;
 			current = list.First();
 			current.Init();
 		}
