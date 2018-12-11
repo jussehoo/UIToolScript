@@ -17,7 +17,7 @@ public class UIManager : MonoBehaviour {
 	public AMenu CreateMenu(Dir anchor)
 	{
 		AMenu m = Instantiate(MenuPrefab).GetComponent<AMenu>();
-		m.main.anchor = Dir.CENTER;
+		m.main.anchor = anchor;
 		m.Initialize(this);
 		if (menus.Size() > 0) m.SetLayerOrder(menus.Last().GetLayerOrder() + 1);
 		else m.SetLayerOrder(1);
