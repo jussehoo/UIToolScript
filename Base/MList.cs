@@ -21,6 +21,7 @@ public class MListIterator<T>
 	private MList<T> list;
 	private MListNode<T> previous, current, next;
 
+	/// <summary>Value (content) of the current node.</summary>
 	public T Value
 	{
 		set { current.Value = value; }
@@ -41,6 +42,7 @@ public class MListIterator<T>
 	{
 		return next != null;
 	}
+	/// <summary>Step to next node. Return true if there was next.</summary>
 	public bool Next()
 	{
 		if (next == null) return false;
