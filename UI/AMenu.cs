@@ -25,11 +25,11 @@ public class AMenu : MonoBehaviour {
 	{
 		BackBlocker.SetActive(false);
 		FrontBlocker.SetActive(false);
-		main = AddContainer("MAIN", Dir.TOP_LEFT);
+		main = AddContainer("MAIN", UIAlign.TOP_LEFT);
 
 	}
 
-	public UIContainer AddContainer(string name, Dir anchor)
+	public UIContainer AddContainer(string name, UIAlign anchor)
 	{
 		UIContainer c = gameObject.AddComponent<UIContainer>();
 		containers.AddLast(c);
@@ -107,17 +107,17 @@ public class AMenu : MonoBehaviour {
 		frontBlockerAction = null;
 	}
 
-	public void AddObject(UIObject newObject, UIContainer container, Dir dir)
+	public void AddObject(UIObject newObject, UIContainer container, UIDir dir)
 	{
 		InitializeNewObject(transform, FrontBlocker.transform.GetSiblingIndex(), container, newObject, dir);
 	}
 
-	public void AddObject(UIObject newObject, Dir dir)
+	public void AddObject(UIObject newObject, UIDir dir)
 	{
 		InitializeNewObject(transform, FrontBlocker.transform.GetSiblingIndex(), main, newObject, dir);
 	}
 
-	private static void InitializeNewObject(Transform parent, int siblingIndex, UIContainer container, UIObject obj, Dir dir)
+	private static void InitializeNewObject(Transform parent, int siblingIndex, UIContainer container, UIObject obj, UIDir dir)
 	{
 		GameObject item = obj.gameObject;
 		item.SetActive(true);
@@ -129,16 +129,20 @@ public class AMenu : MonoBehaviour {
 
 		container.Add(obj, container.anchor, dir); // add new item after previous to 'dir' direction.
 
-		if (container.anchor == Dir.CENTER)
+		if (container.anchor == UIAlign.CENTER)
 		{
 			Vector2 offset = new Vector2(-container.GetWidth() / 2f, container.GetHeight() / 2f);
 			container.SetScreenPosition(getScreenPosition(0, 0) + offset);
 		}
-		else if (container.anchor == Dir.TOP_LEFT)
+		else if (container.anchor == UIAlign.TOP_LEFT)
 		{
 			container.SetScreenPosition(getScreenPosition(-.5f, .5f));
 		}
-		else if (container.anchor == Dir.BOTTOM_LEFT)
+		else if (container.anchor == UIAlign.LEFT)
+		{
+			container.SetScreenPosition(getScreenPosition(-.5f, 0f));
+		}
+		else if (container.anchor == UIAlign.BOTTOM_LEFT)
 		{
 			Vector2 offset = new Vector2(0f, container.GetHeight());
 			container.SetScreenPosition(getScreenPosition(-.5f, -.5f) + offset);

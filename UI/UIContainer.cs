@@ -7,7 +7,7 @@ public class UIContainer : UIObject
 {
 	public string ContainerName;
 
-	public Dir anchor = Dir.TOP_LEFT;
+	public UIAlign anchor = UIAlign.TOP_LEFT;
 	private MList<UIObject> list = new MList<UIObject>();
 	private Rect bounds;
 	Vector2 origin = Vector2.zero;
@@ -28,7 +28,7 @@ public class UIContainer : UIObject
 		}
 	}
 
-	public void Add(UIObject newObj, Dir parentAnchor, Dir dir)
+	public void Add(UIObject newObj, UIAlign parentAnchor, UIDir dir)
 	{
 		Vector2 rel = Vector2.zero;
 
@@ -37,10 +37,10 @@ public class UIContainer : UIObject
 			UIObject last = list.Last();
 			switch (dir)
 			{
-				case Dir.RIGHT:
+				case UIDir.W:
 					rel = last.GetRelative() + new Vector2(last.GetWidth(), 0);
 					break;
-				case Dir.BELOW:
+				case UIDir.S:
 					rel = new Vector2(origin.x, last.GetRelative().y - last.GetHeight());
 					break;
 				default:
@@ -48,7 +48,7 @@ public class UIContainer : UIObject
 					break;
 			}
 		}
-		else if (parentAnchor == Dir.CENTER)
+		else if (parentAnchor == UIAlign.CENTER)
 		{
 			rel = new Vector2(0, 0);
 		}

@@ -14,7 +14,7 @@ public class UIManager : MonoBehaviour {
 		
 	}
 
-	public AMenu CreateMenu(Dir anchor)
+	public AMenu CreateMenu(UIAlign anchor)
 	{
 		AMenu m = Instantiate(MenuPrefab).GetComponent<AMenu>();
 		m.main.anchor = anchor;
@@ -25,7 +25,7 @@ public class UIManager : MonoBehaviour {
 		return m;
 	}
 
-	public AMenu CreatePopup(Dir anchor)
+	public AMenu CreatePopup(UIAlign anchor)
 	{
 		AMenu m = CreateMenu(anchor);
 		popups.AddFirst(m);
