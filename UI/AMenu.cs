@@ -49,6 +49,8 @@ public class AMenu : MonoBehaviour {
 		//AG.assert(closed == true);
 	}
 
+	public bool IsClosed() { return closed; }
+
 	public void Close()
 	{
 		//AG.assert(closed == false);
