@@ -20,6 +20,7 @@ public class AMenu : MonoBehaviour {
 	private UIManager manager;
 
 	private bool closed = false;
+	private Color? backBlockerColor = null;
 
 	void Awake ()
 	{
@@ -91,10 +92,19 @@ public class AMenu : MonoBehaviour {
 		}
 	}
 
-	public void ActivateBackBlocker(bool _closeMenuOnBackBlockerClick)
+	public void ActivateBackBlocker(bool _closeMenuOnBackBlockerClick, bool invisible = false)
 	{
 		BackBlocker.SetActive(true);
 		closeMenuOnBackBlockerOnClick = _closeMenuOnBackBlockerClick;
+		if (invisible)
+		{
+			backBlockerColor = BackBlocker.GetComponent<Image>().color;
+			BackBlocker.GetComponent<Image>().color = new Color(0,0,0,0);
+		}
+		else if (backBlockerColor.HasValue)
+		{
+			BackBlocker.GetComponent<Image>().color = backBlockerColor.Value;
+		}
 	}
 
 	public void ActivateFrontBlocker(Action act, bool disableOnClick)
