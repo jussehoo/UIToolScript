@@ -137,9 +137,9 @@ public class AMenu : MonoBehaviour {
 		item.transform.SetSiblingIndex(siblingIndex);
 		item.transform.localScale = new Vector3(1, 1, 1);
 
-		UT.print("Init. size: " + obj.GetWidth() + ", " + obj.GetHeight());
+		//UT.print("Init. size: " + obj.GetWidth() + ", " + obj.GetHeight());
 
-		container.Add(obj, container.anchor, dir); // add new item after previous to 'dir' direction.
+		container.Add(obj, dir); // add new item after previous to 'dir' direction.
 
 		if (container.anchor == UIAlign.CENTER)
 		{

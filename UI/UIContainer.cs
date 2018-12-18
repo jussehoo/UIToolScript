@@ -22,13 +22,14 @@ public class UIContainer : UIObject
 	}
 	override public void SetScreenPosition(Vector2 p)
 	{
+		base.SetScreenPosition(p);
 		foreach (UIObject o in list)
 		{
 			o.SetScreenPosition(p + o.GetRelativeWithOffset());
 		}
 	}
 
-	public void Add(UIObject newObj, UIAlign parentAnchor, UIDir dir)
+	public void Add(UIObject newObj, UIDir dir)
 	{
 		Vector2 rel = Vector2.zero;
 
@@ -47,10 +48,6 @@ public class UIContainer : UIObject
 					UT.assert(false, "button: invalid direction");
 					break;
 			}
-		}
-		else if (parentAnchor == UIAlign.CENTER)
-		{
-			rel = new Vector2(0, 0);
 		}
 
 		UT.print("REL: " + rel);
