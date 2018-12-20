@@ -13,7 +13,7 @@ public class UIObject : MonoBehaviour
 	private Vector2 offset;
 	private Vector2 size;
 
-	private void Awake()
+	protected void Awake()
 	{
 		var rt = GetComponent<RectTransform>();
 		size.x = rt.rect.width;
