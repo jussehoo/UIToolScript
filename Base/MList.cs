@@ -181,6 +181,14 @@ public class MList<T>
 		size--;
 		if (size == 0) root.Next = tail = null;
 	}
+	public void RemoveAll(T value)
+	{
+		var it = Iterator();
+		while (it.Next())
+		{
+			if (it.Value.Equals(value)) it.Remove();
+		}
+	}
 	public MListNode<T> InsertAfter(MListNode<T> position, T t)
 	{
 		// add a node after 'position', which can't be null

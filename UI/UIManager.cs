@@ -7,11 +7,10 @@ public class UIManager : MonoBehaviour {
 	public GameObject MenuPrefab;
 
 	MList<AMenu> menus = new MList<AMenu>();
-	MList<AMenu> popups = new MList<AMenu>();
+	MList<AMenu> popups = new MList<AMenu>(); // NOTE: all popups are also in menus list
 
-	// Use this for initialization
-	void Start () {
-		
+	void Start ()
+	{		
 	}
 
 	public AMenu CreateMenu(UIAlign anchor)
@@ -61,6 +60,18 @@ public class UIManager : MonoBehaviour {
 				menus.Remove(it);
 				return;
 		}   }
+	}
+
+	public void CloseAllPopups()
+	{
+		var it = popups.Iterator(); // remove menu from the list
+		while (it.Next())
+		{
+			it.Value.SetClosed();
+			menus.RemoveAll(it.Value);
+			Destroy(it.Value.gameObject);
+			it.Remove();
+		}
 	}
 
 	public void CloseAll()
