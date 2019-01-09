@@ -5,8 +5,7 @@ using UnityEngine;
 public class UIObject : MonoBehaviour
 {
 	/*
-	 * Creating a new object template:
-	 *	- Set pivot point to top left corner
+	 * Creating a new object template: TODO. instructions
 	*/
 
 	private Vector2 relative; // position, relative to container
