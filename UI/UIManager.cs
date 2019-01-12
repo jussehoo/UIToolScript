@@ -6,12 +6,16 @@ public class UIManager : MonoBehaviour {
 
 	public GameObject MenuPrefab;
 
-	MList<AMenu> menus = new MList<AMenu>();
-	MList<AMenu> popups = new MList<AMenu>(); // NOTE: all popups are also in menus list
+	private MList<AMenu> menus = new MList<AMenu>();
+	private MList<AMenu> popups = new MList<AMenu>(); // NOTE: all popups are also in menus list
 
 	void Start ()
 	{		
 	}
+
+	public int NumPopups() { return popups.Size(); }
+	public int NumMenus() { return menus.Size(); }
+
 
 	public AMenu CreateMenu(UIAlign anchor)
 	{
