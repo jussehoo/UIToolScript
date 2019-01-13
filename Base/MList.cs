@@ -181,7 +181,7 @@ public class MList<T>
 		size--;
 		if (size == 0) root.Next = tail = null;
 	}
-	public void RemoveAll(T value)
+	public void RemoveEqual(T value)
 	{
 		var it = Iterator();
 		while (it.Next())

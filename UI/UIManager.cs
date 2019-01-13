@@ -72,7 +72,7 @@ public class UIManager : MonoBehaviour {
 		while (it.Next())
 		{
 			it.Value.SetClosed();
-			menus.RemoveAll(it.Value);
+			menus.RemoveEqual(it.Value);
 			Destroy(it.Value.gameObject);
 			it.Remove();
 		}
