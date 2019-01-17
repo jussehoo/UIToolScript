@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Sequence : MonoBehaviour
 {
@@ -16,14 +17,15 @@ public class Sequence : MonoBehaviour
 	private abstract class IClip
 	{
 		protected Sequence seq;
-		protected float time;
-		public IClip(Sequence seq, float time) { this.seq = seq; this.time = time; }
+		protected float timeLeft;
+		protected readonly float totalTime;
+		public IClip(Sequence seq, float time) { this.seq = seq; totalTime = timeLeft = time; }
 		abstract public void Init();
 		abstract public bool Step();
 		protected bool UpdateTimer()
 		{
-			time -= Time.deltaTime;
-			return time > 0f;
+			timeLeft -= Time.deltaTime;
+			return timeLeft > 0f; // return true if there's time left
 		}
 	}
 	private class RotateTowards : IClip
@@ -36,7 +38,7 @@ public class Sequence : MonoBehaviour
 		}
 		public override void Init()
 		{
-			speed = (Mathf.Deg2Rad * Vector3.Angle(seq.transform.forward, targetDir)) / time;
+			speed = (Mathf.Deg2Rad * Vector3.Angle(seq.transform.forward, targetDir)) / timeLeft;
 		}
 		public override bool Step()
 		{
@@ -62,7 +64,7 @@ public class Sequence : MonoBehaviour
 		{
 			// calculate move vector relative to time
 			velocity = targetPosition - seq.transform.position;
-			velocity /= time;
+			velocity /= timeLeft;
 		}
 		public override bool Step()
 		{
@@ -87,7 +89,7 @@ public class Sequence : MonoBehaviour
 		}
 		public override void Init()
 		{
-			velocity = (end - start) / time;
+			velocity = (end - start) / timeLeft;
 			currentScale = start;
 		}
 		public override bool Step()
@@ -97,10 +99,36 @@ public class Sequence : MonoBehaviour
 				// update position
 				currentScale += Time.deltaTime * velocity;
 				seq.transform.localScale = new Vector3(currentScale, currentScale, currentScale);
-				//UT.print("MoveTo: " + seq.transform.position);
 				return true;
 			}
 			seq.transform.localScale = new Vector3(end, end, end);
+			return false;
+		}
+	}
+
+	private class ImageColorLerp : IClip
+	{
+		Image image;
+		Color from, to;
+		public ImageColorLerp(Sequence seq, Image _image, Color _from, Color _to, float time) : base(seq, time)
+		{
+			image = _image;
+			from = _from;
+			to = _to;
+		}
+		public override void Init()
+		{
+			image.color = from;
+		}
+
+		public override bool Step()
+		{
+			if (UpdateTimer())
+			{
+				image.color = Color.Lerp(from, to, (totalTime - timeLeft) / totalTime);
+				return true;
+			}
+			image.color = to;
 			return false;
 		}
 	}
@@ -114,16 +142,19 @@ public class Sequence : MonoBehaviour
 	{
 		list.AddLast(new RotateTowards(this, targetRotation, time));
 	}
-
 	public void AddMoveTo(Vector3 targetPosition, float time)
 	{
 		list.AddLast(new MoveTo(this, targetPosition, time));
 	}
-
 	public void AddLocalScaling(float from, float to, float time)
 	{
 		list.AddLast(new LocalScaling(this, from, to, time));
 	}
+	public void AddImageColorLerp(Image image, Color from, Color to, float time)
+	{
+		list.AddLast(new ImageColorLerp(this, image, from, to, time));
+	}
+
 	private void Start()
 	{
 		Step();
