@@ -126,6 +126,8 @@ public class MList<T>
 		root, // first, empty (dummy) node
 		tail; // last node, containing real data
 	
+	// TODO: iterator for internal use to prevent 'new' calls
+
 	public MList() { root = new MListNode<T>(); tail = null; }
 	public MListEnumerator<T> GetEnumerator() {	return new MListEnumerator<T>(this); }
 	public MListIterator<T> Iterator() { return new MListIterator<T>(this, root); }
@@ -200,7 +202,13 @@ public class MList<T>
 		size++;
 		return node;
 	}
-
+	public T GetAt(int index)
+	{
+		UT.assert(index >= 0 && index < size);
+		var it = Iterator();
+		while (index-- >= 0) it.Next();
+		return it.Value;
+	}
 	public void AssertValid()
 	{
 		if (size == 0)
