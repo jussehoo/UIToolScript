@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class UT
 {
-	// utilities
+	// Utilities
 
 	public static void trap(string msg = "") { assert(false, msg); }
 
