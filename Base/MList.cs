@@ -191,6 +191,17 @@ public class MList<T>
 			if (it.Value.Equals(value)) it.Remove();
 		}
 	}
+	public int EqualIndex(T value, int minIndex = 0)
+	{
+		var it = Iterator();
+		int index = 0;
+		while (it.Next())
+		{
+			if (it.Value.Equals(value) && index >= minIndex) return index;
+			index++;
+		}
+		return -1;
+	}
 	public MListNode<T> InsertAfter(MListNode<T> position, T t)
 	{
 		// add a node after 'position', which can't be null
