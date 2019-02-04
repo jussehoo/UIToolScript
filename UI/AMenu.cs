@@ -88,7 +88,6 @@ public class AMenu : MonoBehaviour {
 		if (frontBlockerAction != null)
 		{
 			frontBlockerAction.Invoke();
-			frontBlockerAction = null;
 		}
 	}
 

@@ -28,7 +28,7 @@ public static class Util
 		temp.y -= canvas.sizeDelta.y * canvas.pivot.y;
 		return temp;
 	}
-	// Unique int getter with a recognizable value, for constant ID's etc.
+	// Unique int getter with a recognizable Value(), for constant ID's etc.
 	private static int _unique = 333000;
 	public static int Unique() { return ++_unique; }
 }

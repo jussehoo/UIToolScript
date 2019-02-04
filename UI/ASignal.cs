@@ -18,10 +18,10 @@ public class ASignalCode : ISignal
 public class ASignalValue : ISignal
 {
 	public readonly int key;
-	public readonly int value;
-	public ASignalValue(int _key, int _value) : base(ISignal.VALUE)
+	public readonly int Value;
+	public ASignalValue(int _key, int _Value) : base(ISignal.VALUE)
 	{
 		key = _key;
-		value = _value;
+		Value = _Value;
 	}
 }

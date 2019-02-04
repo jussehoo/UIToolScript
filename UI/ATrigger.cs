@@ -50,15 +50,15 @@ public class ACodeTrigger : ITrigger
 
 public class AValueTrigger : ITrigger
 {
-	public readonly int key, value;
-	public AValueTrigger(Action _action, int _key, int _value) : base(_action)
+	public readonly int key, Value;
+	public AValueTrigger(Action _action, int _key, int _Value) : base(_action)
 	{
 		key = _key;
-		value = _value;
+		Value = _Value;
 	}
 	public override bool Check(ISignal sig)
 	{
 		if (sig.GetType() != typeof(ASignalValue)) return false;
-		return ((ASignalValue)sig).key == key && ((ASignalValue)sig).value == value;
+		return ((ASignalValue)sig).key == key && ((ASignalValue)sig).Value == Value;
 	}
 }

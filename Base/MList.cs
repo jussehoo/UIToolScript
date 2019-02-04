@@ -12,7 +12,7 @@ using System.Collections.Generic;
 
 public class MListNode<T>
 {
-	public T Value;
+	public T value;
 	public MListNode<T> Next;
 }
 
@@ -21,12 +21,10 @@ public class MListIterator<T>
 	private MList<T> list;
 	private MListNode<T> previous, current, next;
 
-	/// <summary>Value (content) of the current node.</summary>
-	public T Value
-	{
-		set { current.Value = value; }
-		get { return current.Value; }
-	}
+	/// <summary>Value() (content) of the current node.</summary>
+	public T Value() { return current.value; }
+	public void SetValue(T v) { current.value = v; }
+
 	public MListIterator(MList<T> _list, MListNode<T> _previous)
 	{
 		list = _list;
@@ -113,8 +111,8 @@ public class MListEnumerator<T> : IEnumerable<T>
 	private MList<T> list; MListIterator<T> it;
 	public MListEnumerator(MList<T> _list) { list = _list; it = list.Iterator(); }
 	IEnumerator IEnumerable.GetEnumerator()	{ yield return list.GetEnumerator(); }
-	IEnumerator<T> IEnumerable<T>.GetEnumerator() { while (it.Next()) yield return it.Value; }
-	public T Current { get { return it.Value; } }
+	IEnumerator<T> IEnumerable<T>.GetEnumerator() { while (it.Next()) yield return it.Value(); }
+	public T Current { get { return it.Value(); } }
 	public bool MoveNext() { return it.Next(); }
 }
 
@@ -131,8 +129,8 @@ public class MList<T>
 	public MList() { root = new MListNode<T>(); tail = null; }
 	public MListEnumerator<T> GetEnumerator() {	return new MListEnumerator<T>(this); }
 	public MListIterator<T> Iterator() { return new MListIterator<T>(this, root); }
-	public T First() { return root.Next.Value; }
-	public T Last()	{ return tail.Value; }
+	public T First() { return root.Next.value; }
+	public T Last()	{ return tail.value; }
 	public int Size() { return size; }
 
 	public void AddFirst(T t)
@@ -152,7 +150,7 @@ public class MList<T>
 	}
 	public void AddLast(T t)
 	{
-		MListNode<T> node = new MListNode<T> { Value = t };
+		MListNode<T> node = new MListNode<T> { value = t };
 		if (size == 0) root.Next = node;
 		else tail.Next = node;
 		tail = node;
@@ -188,7 +186,7 @@ public class MList<T>
 		var it = Iterator();
 		while (it.Next())
 		{
-			if (it.Value.Equals(value)) it.Remove();
+			if (it.Value().Equals(value)) it.Remove();
 		}
 	}
 	public int EqualIndex(T value, int minIndex = 0)
@@ -197,7 +195,7 @@ public class MList<T>
 		int index = 0;
 		while (it.Next())
 		{
-			if (it.Value.Equals(value) && index >= minIndex) return index;
+			if (it.Value().Equals(value) && index >= minIndex) return index;
 			index++;
 		}
 		return -1;
@@ -207,7 +205,7 @@ public class MList<T>
 		// add a node after 'position', which can't be null
 		// special cases: first, only one, last
 		UT.assert(position != null);
-		MListNode<T> node = new MListNode<T> { Value = t, Next = position.Next };
+		MListNode<T> node = new MListNode<T> { value = t, Next = position.Next };
 		position.Next = node;
 		if (tail == position) tail = node;
 		size++;
@@ -218,7 +216,7 @@ public class MList<T>
 		UT.assert(index >= 0 && index < size);
 		var it = Iterator();
 		while (index-- >= 0) it.Next();
-		return it.Value;
+		return it.Value();
 	}
 	public void AssertValid()
 	{
@@ -236,7 +234,7 @@ public class MList<T>
 				it.AssertValid();
 				n++;
 			}
-			UT.assert(it.Value.Equals(tail.Value));
+			UT.assert(it.Value().Equals(tail.value));
 			UT.assert(n == size);
 			UT.assert(it.Finished());
 		}
