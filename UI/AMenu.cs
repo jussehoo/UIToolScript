@@ -17,6 +17,7 @@ public class AMenu : MonoBehaviour {
 	public Vector2 origin = new Vector2(0, 0);
 	private bool closeMenuOnBackBlockerOnClick, disableFrontBlockerOnClick;
 	private Action frontBlockerAction;
+	public Action closeAction;
 	private UIManager manager;
 
 	private bool closed = false;
@@ -46,18 +47,19 @@ public class AMenu : MonoBehaviour {
 
 	void OnDestroy()
 	{
-		// TODO: proper closing in all cases
 		//AG.assert(closed == true);
+		if (closeAction != null)
+		{
+			closeAction.Invoke();
+			closeAction = null;
+		}
 	}
 
 	public bool IsClosed() { return closed; }
 
 	public void Close()
 	{
-		//AG.assert(closed == false);
-		manager.SetClosed(this);
-		closed = true;
-		Destroy(gameObject);
+		manager.CloseMenu(this);
 	}
 
 	public void SetClosed() { closed = true; }

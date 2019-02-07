@@ -10,7 +10,7 @@ public abstract class ITrigger
 	public readonly Action action;
 	public ITrigger(Action _action) { action = _action; }
 	public abstract bool Check(ISignal sig);
-	public bool CheckAndTrig(ASignalCode sig)
+	public bool CheckAndTrig(ISignal sig)
 	{
 		if (!Check(sig)) return false;
 		action.Invoke();

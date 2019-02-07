@@ -44,12 +44,12 @@ public class UIManager : MonoBehaviour {
 		return m;
 	}
 
-	public void SetClosed(AMenu m)
+	public void CloseMenu(AMenu m)
 	{
-		// check if it's a pop-up
+		// check if it's the top pop-up
 		if (popups.Size() > 0 && popups.First() == m)
 		{
-			Destroy(popups.First());
+			Destroy(popups.First().gameObject);
 			popups.RemoveFirst();
 			if (popups.Size() > 0)
 			{
@@ -57,13 +57,26 @@ public class UIManager : MonoBehaviour {
 			}
 		}
 
-		var it = menus.Iterator(); // remove menu from the list
-		while (it.Next()) {
-			if (it.Value() == m) {
-				Destroy(it.Value());
-				menus.Remove(it);
+		var it = popups.Iterator(); // remove menu from the list
+		while (it.Next())
+		{
+			if (it.Value() == m)
+			{
+				Destroy(it.Value().gameObject);
+				it.Remove();
 				return;
-		}   }
+			}
+		}
+		it = menus.Iterator(); // remove menu from the list
+		while (it.Next())
+		{
+			if (it.Value() == m)
+			{
+				Destroy(it.Value().gameObject);
+				it.Remove();
+				return;
+			}
+		}
 	}
 
 	public void CloseAllPopups()
