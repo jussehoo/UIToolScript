@@ -45,10 +45,20 @@ public class AMenu : MonoBehaviour {
 		manager = m;
 	}
 
+	private void OnApplicationQuit()
+	{
+		closed = true;
+	}
+
 	void OnDestroy()
 	{
-		//AG.assert(closed == true);
-		if (closeAction != null)
+		UT.assert(closed == true);
+	}
+
+	public void SetClosed()
+	{
+		closed = true;
+		if (!closed && closeAction != null)
 		{
 			closeAction.Invoke();
 			closeAction = null;
@@ -62,7 +72,6 @@ public class AMenu : MonoBehaviour {
 		manager.CloseMenu(this);
 	}
 
-	public void SetClosed() { closed = true; }
 
 	public void SetLayerOrder(int i)
 	{

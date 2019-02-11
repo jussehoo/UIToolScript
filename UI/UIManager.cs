@@ -46,6 +46,8 @@ public class UIManager : MonoBehaviour {
 
 	public void CloseMenu(AMenu m)
 	{
+		m.SetClosed();
+
 		// check if it's the top pop-up
 		if (popups.Size() > 0 && popups.First() == m)
 		{
@@ -64,7 +66,6 @@ public class UIManager : MonoBehaviour {
 			{
 				Destroy(it.Value().gameObject);
 				it.Remove();
-				return;
 			}
 		}
 		it = menus.Iterator(); // remove menu from the list
@@ -74,7 +75,6 @@ public class UIManager : MonoBehaviour {
 			{
 				Destroy(it.Value().gameObject);
 				it.Remove();
-				return;
 			}
 		}
 	}
