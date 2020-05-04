@@ -1,5 +1,10 @@
-﻿using System;
+﻿#if !(UNITY_IOS || UNITY_ANDROID)
+#define UT_MOUSE
+#endif
+
+using System;
 using UnityEngine;
+
 
 public class UT
 {
@@ -26,28 +31,56 @@ public class UT
 
 	// touch/pointer utilities (one finger control)
 
+	public static Vector2? MousePosition()
+	{
+#if UT_MOUSE
+		return Input.mousePosition;
+#else
+		return null;
+#endif
+	}
+
 	public static Vector2? PointerPosition()
 	{
 		if (!IsTouching()) return null;
-#if UNITY_EDITOR
+#if UT_MOUSE
 		return Input.mousePosition;
 #else
 		return Input.GetTouch(0).position;
 #endif
 	}
-
+	
 	public static bool IsTouching()
 	{
-#if UNITY_EDITOR
+#if UT_MOUSE
 		return Input.GetMouseButton(0);
 #else
 		return Input.touchCount > 0;
 #endif
 	}
+	
+	public static bool IsLeftButtonDown()
+	{
+#if UT_MOUSE
+		return Input.GetMouseButton(0);
+#else
+		return false;
+#endif
+	}
+
+	public static bool IsRightButtonDown()
+	{
+#if UT_MOUSE
+		return Input.GetMouseButton(1);
+#else
+		return false;
+#endif
+	}
+
 	public static bool TouchStarted()
 	{
 		// true on first frame when start touching
-#if UNITY_EDITOR
+#if UT_MOUSE
 		return Input.GetMouseButtonDown(0);
 #else
 		return Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Began;
@@ -56,7 +89,7 @@ public class UT
 	public static bool TouchEnded()
 	{
 		// true on first frame when stop touching
-#if UNITY_EDITOR
+#if UT_MOUSE
 		return Input.GetMouseButtonUp(0);
 #else
 		return Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Ended;
