@@ -7,6 +7,7 @@
 //		- Add/remove by index.
 //		- Iterator/enumerator with a condition.
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -132,6 +133,7 @@ public class MList<T>
 	public T First() { return root.Next.value; }
 	public T Last()	{ return tail.value; }
 	public int Size() { return size; }
+	public bool IsEmpty() { return size == 0; }
 
 	public void AddFirst(T t)
 	{

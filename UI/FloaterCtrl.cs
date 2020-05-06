@@ -3,15 +3,17 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class FloaterCtrl : MonoBehaviour {
-	private Text tmp;
+	private Transform anchor;
+	private TextMeshProUGUI tmp;
 	const float LIFE_TIME = 2f;
-	float lifeTime;
+	float lifeTime, offset = 0;
 	public bool sticky = false;
+	public Camera cam;
 	ASinPulse pulse;
 	// Use this for initialization
 	void Start ()
 	{
-		tmp = GetComponentInChildren<Text>();
+		tmp = GetComponentInChildren<TextMeshProUGUI>();
 	}
 	
 	// Update is called once per frame
@@ -25,10 +27,18 @@ public class FloaterCtrl : MonoBehaviour {
 
 		if (lifeTime > 0f)
 		{
-			transform.localPosition = new Vector2(
-				transform.localPosition.x,
-				transform.localPosition.y + (Time.deltaTime * 30f)
-			);
+			if (anchor != null)
+			{
+				offset += Time.deltaTime * 1f;
+				transform.position = cam.WorldToScreenPoint(anchor.position + (2  + offset) * Vector3.up);
+			}
+			else
+			{
+				transform.localPosition = new Vector2(
+					transform.localPosition.x,
+					transform.localPosition.y + (Time.deltaTime * 30f));
+			}
+			
 			lifeTime -= Time.deltaTime;
 		}
 		else if (!sticky)
@@ -41,9 +51,10 @@ public class FloaterCtrl : MonoBehaviour {
 		}
 	}
 
-	internal void Initialize(string text, Color? c, bool _sticky = false)
+	internal void Initialize(string text, Color? c, Transform _anchor, bool _sticky = false)
 	{
-		tmp = GetComponentInChildren<Text>();
+		anchor = _anchor;
+		tmp = GetComponentInChildren<TextMeshProUGUI>();
 		tmp.text = text;
 		if (c != null) tmp.color = c.Value;
 		lifeTime = LIFE_TIME;
