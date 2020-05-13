@@ -17,7 +17,7 @@ public class FloaterCtrl : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update ()
+	void LateUpdate ()
 	{
 		if (pulse != null)
 		{
