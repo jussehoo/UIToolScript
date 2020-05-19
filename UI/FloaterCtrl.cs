@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class FloaterCtrl : MonoBehaviour {
 	private Transform anchor;
+	public Vector3? worldPosition;
 	private TextMeshProUGUI tmp;
 	const float LIFE_TIME = 2f;
 	float lifeTime, offset = 0;
@@ -27,18 +28,22 @@ public class FloaterCtrl : MonoBehaviour {
 
 		if (lifeTime > 0f)
 		{
-			if (anchor != null)
+			if (worldPosition != null)
 			{
+				if (anchor != null)
+				{
+					worldPosition = anchor.position;
+				}
 				offset += Time.deltaTime * 1f;
-				transform.position = cam.WorldToScreenPoint(anchor.position + (2  + offset) * Vector3.up);
+				transform.position = cam.WorldToScreenPoint(worldPosition.Value + (2  + offset) * Vector3.up);
 			}
 			else
-			{
+			{			
 				transform.localPosition = new Vector2(
 					transform.localPosition.x,
 					transform.localPosition.y + (Time.deltaTime * 30f));
 			}
-			
+
 			lifeTime -= Time.deltaTime;
 		}
 		else if (!sticky)
