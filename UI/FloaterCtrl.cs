@@ -8,6 +8,7 @@ public class FloaterCtrl : MonoBehaviour {
 	private TextMeshProUGUI tmp;
 	const float LIFE_TIME = 2f;
 	float lifeTime, offset = 0;
+	float speed = 50f;
 	public bool sticky = false;
 	public Camera cam;
 	ASinPulse pulse;
@@ -34,15 +35,20 @@ public class FloaterCtrl : MonoBehaviour {
 				{
 					worldPosition = anchor.position;
 				}
-				offset += Time.deltaTime * 1f;
-				transform.position = cam.WorldToScreenPoint(worldPosition.Value + (2  + offset) * Vector3.up);
-			}
-			else
-			{			
+				transform.position = cam.WorldToScreenPoint(worldPosition.Value + (2 * Vector3.up));
+				offset += speed * Time.deltaTime;
+
 				transform.localPosition = new Vector2(
 					transform.localPosition.x,
-					transform.localPosition.y + (Time.deltaTime * 30f));
+					transform.localPosition.y + offset);
 			}
+			else
+			{
+				transform.localPosition = new Vector2(
+					transform.localPosition.x,
+					transform.localPosition.y + speed * Time.deltaTime);
+			}
+
 
 			lifeTime -= Time.deltaTime;
 		}

@@ -1,34 +1,45 @@
 ﻿#if !(UNITY_IOS || UNITY_ANDROID)
 #define UT_MOUSE
 #endif
-
-using System;
+#if !SERVER
 using UnityEngine;
-
+#endif
 
 public class UT
 {
 	// Utilities
 
-	public static void trap(string msg = "") { assert(false, msg); }
-
+	public static void trap(string msg = "")
+	{
+		assert(false, msg);
+	}
+	
+	public static void print(string s)
+	{
+#if SERVER
+		System.Console.WriteLine(s);
+#else
+		Debug.Log(s);
+#endif
+	}
+	public static void verbose(string s)
+	{
+		print(s);
+	}
 	public static void assert(bool assertion, string msg = "")
 	{
 		if (!assertion)
 		{
-			Debug.Log("ASSERTION FAILED: " + msg);
+#if SERVER
+			System.Diagnostics.Debug.Assert(false,"ASSERTION FAILED: " + msg);
+#else
+			print("ASSERTION FAILED: " + msg);
 			UnityEngine.Assertions.Assert.IsTrue(false);
+#endif
 		}
 	}
-	public static void print(string s)
-	{
-		Debug.Log(s);
-	}
-	public static void verbose(string s)
-	{
-		Debug.Log(s);
-	}
 
+#if !SERVER
 	// touch/pointer utilities (one finger control)
 
 	public static Vector2? MousePosition()
@@ -104,4 +115,5 @@ public class UT
 		float vFOV = vFOVInRads * Mathf.Rad2Deg;
 		return vFOV;
 	}
+#endif // !SERVER
 }

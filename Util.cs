@@ -1,5 +1,7 @@
 ﻿using System;
+#if !SERVER
 using UnityEngine;
+#endif
 
 public class ASinPulse
 {
@@ -14,12 +16,13 @@ public class ASinPulse
 	public float Get(float timeDelta)
 	{
 		d += timeDelta * interval * 3.14f;
-		return (Mathf.Sin(d) * height) + offset;
+		return ((float)Math.Sin(d) * height) + offset;
 	}
 }
 public static class Util
 {
 
+#if !SERVER
 	public static Vector2 WorldToCanvasPosition(RectTransform canvas, Camera camera, Vector3 position)
 	{
 		Vector2 temp = camera.WorldToViewportPoint(position);
@@ -29,6 +32,8 @@ public static class Util
 		temp.y -= canvas.sizeDelta.y * canvas.pivot.y;
 		return temp;
 	}
+#endif
+
 	// Unique int getter with a recognizable Value(), for constant ID's etc.
 	private static int _unique = 333000;
 	public static int Unique() { return ++_unique; }
