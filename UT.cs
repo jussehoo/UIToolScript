@@ -7,7 +7,11 @@ using UnityEngine;
 
 public class UT
 {
+	public static readonly System.Random rnd = new System.Random(1234567);
+
 	// Utilities
+
+	public static float randomFloat() { return (float) rnd.NextDouble(); }
 
 	public static void trap(string msg = "")
 	{
@@ -25,6 +29,10 @@ public class UT
 	public static void verbose(string s)
 	{
 		print(s);
+	}
+	public static void assert0to1(float f, string msg = "")
+	{
+		assert(f >= 0 && f <= 1, msg);
 	}
 	public static void assert(bool assertion, string msg = "")
 	{

@@ -1,6 +1,12 @@
 ﻿using System;
 #if !SERVER
 using UnityEngine;
+ 
+public class DebugLogWriter : System.IO.TextWriter {
+     public override void Write(string value) { base.Write(value);
+	 Debug.Log(value); }
+     public override System.Text.Encoding Encoding { get { return System.Text.Encoding.UTF8; }}
+ }
 #endif
 
 public class ASinPulse
@@ -21,7 +27,27 @@ public class ASinPulse
 }
 public static class Util
 {
+	static public float linearInterpolation(float x, float x0, float x1, float y0, float y1)
+	{
+//		|              / (x1,y1)
+//		|             /_____________ return value y
+//		|            /|
+//		|           / |
+//		|  (x0,y0) /  |
+//		|             x
 
+		UT.assert(x >= x0 && x <= x1);
+		UT.assert(x0 <= x1);
+
+		if ((x1 - x0) == 0)	return (y0 + y1) / 2;
+		return y0 + (x - x0) * (y1 - y0) / (x1 - x0);
+	}
+	static public float linearInterpolation(float factor, float min, float max)
+	{
+		UT.assert0to1(factor);
+		return min + (max - min) * factor;
+	}
+    
 #if !SERVER
 	public static Vector2 WorldToCanvasPosition(RectTransform canvas, Camera camera, Vector3 position)
 	{

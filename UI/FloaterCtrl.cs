@@ -7,8 +7,8 @@ public class FloaterCtrl : MonoBehaviour {
 	public Vector3? worldPosition;
 	private TextMeshProUGUI tmp;
 	const float LIFE_TIME = 2f;
-	float lifeTime, offset = 0;
-	float speed = 50f;
+	public float lifeTime, offset = 0;
+	public float speed = 50f;
 	public bool sticky = false;
 	public Camera cam;
 	ASinPulse pulse;
