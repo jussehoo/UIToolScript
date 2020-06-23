@@ -27,6 +27,13 @@ public class ASinPulse
 }
 public static class Util
 {
+	static public float clamp(float value, float min, float max)
+	{
+		if (value < min) return min;
+		if (value > max) return max;
+		return value;
+	}
+
 	static public float linearInterpolation(float x, float x0, float x1, float y0, float y1)
 	{
 //		|              / (x1,y1)
