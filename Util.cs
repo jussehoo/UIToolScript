@@ -8,7 +8,16 @@ public class DebugLogWriter : System.IO.TextWriter {
      public override System.Text.Encoding Encoding { get { return System.Text.Encoding.UTF8; }}
  }
 #endif
-
+public static class ArrayExtensions
+{
+	public static void Fill<T>(this T[] originalArray, T with)
+	{
+		for (int i = 0; i < originalArray.Length; i++)
+		{
+			originalArray[i] = with;
+		}
+	}
+}
 public class ASinPulse
 {
 	readonly float interval, height, offset;
@@ -32,6 +41,53 @@ public static class Util
 		if (value < min) return min;
 		if (value > max) return max;
 		return value;
+	}
+	
+	public const int SEC_IN_MIN = 60;
+	public const int MIN_IN_HOUR = 60;
+	public const int HOUR_IN_DAY = 24;
+	public const int SEC_IN_HOUR = SEC_IN_MIN * MIN_IN_HOUR;
+	public const int SEC_IN_DAY = SEC_IN_HOUR * HOUR_IN_DAY;
+
+	static public string CompactTime(int sec)
+	{
+		// time in a compact text format
+		const int MAX_ITEMS = 2;
+		int items = 0;
+		string s = "";
+		if (sec < 0)
+		{
+			s = "-";
+			sec = -sec;
+		}
+		while (true)
+		{
+			if (items > 0)
+			{
+				if (sec == 0) break;
+				s += " ";
+			}
+			if (sec <= SEC_IN_MIN)
+			{
+				s += sec + "s";
+				break;
+			}
+			if (sec <= SEC_IN_HOUR)
+			{
+				int minutes = sec / SEC_IN_MIN;
+				s += minutes + "m";
+				sec -= minutes * SEC_IN_MIN;
+			}
+			else
+			{
+				int hours = sec / SEC_IN_HOUR;
+				s += hours + "h";
+				sec -= hours * SEC_IN_HOUR;
+			}
+			items ++;
+			if (items >= MAX_ITEMS) break;
+		}
+		return s;
 	}
 
 	static public float linearInterpolation(float x, float x0, float x1, float y0, float y1)
