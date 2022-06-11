@@ -48,6 +48,10 @@ public static class Util
 	public const int HOUR_IN_DAY = 24;
 	public const int SEC_IN_HOUR = SEC_IN_MIN * MIN_IN_HOUR;
 	public const int SEC_IN_DAY = SEC_IN_HOUR * HOUR_IN_DAY;
+	
+	// for a project, modify in the project's code
+	public static int MAX_HOURS_TO_SHOW_MINUTES = 1;
+	public static int MAX_MINUTES_TO_SHOW_SECONDS = 1;
 
 	static public string CompactTime(int sec)
 	{
@@ -76,12 +80,14 @@ public static class Util
 			{
 				int minutes = sec / SEC_IN_MIN;
 				s += minutes + "m";
+				if (minutes > MAX_MINUTES_TO_SHOW_SECONDS) break;
 				sec -= minutes * SEC_IN_MIN;
 			}
 			else
 			{
 				int hours = sec / SEC_IN_HOUR;
 				s += hours + "h";
+				if (hours > MAX_HOURS_TO_SHOW_MINUTES) break;
 				sec -= hours * SEC_IN_HOUR;
 			}
 			items ++;
