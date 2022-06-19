@@ -46,6 +46,185 @@ public class Int2
 	public static int chessboardDistance(int ax, int ay, int bx, int by){return Math.Max(Math.Abs(ax - bx), Math.Abs(ay - by));}
 	public void toChessBoardUnit(){x = sign(x);y = sign(y);}
 
+	// SQUARE GRID
+	
+	public void rot90(int ox, int oy)
+	{
+		// rotate 90 CW around (ox,oy)
+		sub(ox,oy);
+		int tmp = y;
+		y = x;
+		x = -tmp -1; // -1!?!? (TODO: pariton/parillinen (-1 vai ei))
+		add(ox,oy);
+	}
+	
+	public static int cmpInterval (int i, int start, int end)
+	{
+		// compare i with interval, return -1 (less), 0 (equal), or 1 (greater)
+		UT.assert(start <= end);
+		if (i<start) return -1;
+		if (i>end) return 1;
+		return 0;
+	}
+	
+	public const int N=0, NE=1, E=2, SE=3, S=4, SW=5, W=6, NW=7;
+	//
+	//      0
+	//    7   1
+	//  6  -1   2
+	//    5   3
+	//      4
+
+	public static int dir8(int x, int y)
+	{
+		if (y<0) {
+			if (x<0) return 7;
+			if (x==0) return 0;
+			return 1;
+		}
+		if (y>0) {
+			if (x<0) return 5;
+			if (x==0) return 4;
+			return 3;
+		}
+		if (x<0) return 6;
+		if (x>0) return 2;
+		return -1;
+	}
+	public static int [] dir8array(int x, int y)
+	{
+		// return all valid directions, starting with best options, or null if (0,0)
+		// TODO: 'rnd' parameter to get other orders
+		// TODO: unit test
+		// TODO: impl. dir16 & array for return values (arrays)?
+		if (y<0)
+		{
+			if (x==0) return  new int [] {0,7,1};
+			if (x<0)
+			{
+				if (x<y) return new int [] {6,7,0};
+				if (y<x) return new int [] {0,7,6};
+				return new int [] {7,0,6};
+			}
+			if (-x<y) return new int [] {1,0,2};
+			if (y<-x) return new int [] {2,1,0};
+			return new int [] {1,0,2};
+		}
+		if (y>0) {
+			if (x==0) return new int [] {4,5,3};
+			if (x<0)
+			{
+				if (-x>y) return new int [] {6,5,4};
+				if (y>-x) return new int [] {4,5,6};
+				return new int [] {5,6,4};
+			}
+			if (x>y) return new int [] {2,3,4};
+			if (y>x) return new int [] {4,3,2};
+			return new int [] {3,2,4};
+		}
+		if (x<0) return new int [] {6,7,5};
+		if (x>0) return new int [] {2,3,1};
+
+		return null;
+	}
+	public int dir8() {return dir8(x, y);}
+	public int dir8(Int2 i) {return dir8(i.x-x,i.y-y);}
+	public int [] dir8array() {return dir8array(x, y);}
+	public int [] dir8array(Int2 i) {return dir8array(i.x-x,i.y-y);}
+	
+	public static int[][] dir8delta = new int[][] {new int[]{0,-1},new int[]{1,-1},new int[]{1,0},new int[]{1,1},new int[]{0,1},new int[]{-1,1},new int[]{-1,0},new int[]{-1,-1}};
+	public void move(int d)
+	{
+		x += dir8delta[d][0];
+		y += dir8delta[d][1];		
+	}
+	public static int[] dir8opposite = {4,5,6,7,0,1,2,3};
+	public static int oppositeDir8(int dir)
+	{
+		return dir8opposite[dir];
+	}
+	public static int turn8 (int d, bool cw)
+	{
+		if (cw) {
+			d++;
+			if (d>7) d=0;
+		} else {
+			d--;
+			if (d<0) d=7;
+		}
+		return d;		
+	}
+	public static int rectToPointDir8(Int2 p, Int2 rect, Int2 size)
+	{
+		// TODO: test
+		return dir8(cmpInterval(p.x, rect.x, rect.x+size.x-1), cmpInterval(p.y, rect.y, rect.y+size.y-1));
+	}
+	
+	public static Int2 closestPointOnRect (Int2 p, Int2 tl, Int2 size)
+	{
+		switch (rectToPointDir8(p,tl,size))
+		{
+		case 0: return new Int2(p.x, tl.y);					// N
+		case 1: return new Int2(tl.x+size.x-1, tl.y);		// NE
+		case 2: return new Int2(tl.x+size.x-1, p.y);		// E
+		case 3: return new Int2(tl.x+size.x-1, tl.y+size.y-1);// SE
+		case 4: return new Int2(p.x, tl.y+size.y-1);		// S
+		case 5: return new Int2(tl.x, tl.y+size.y-1);		// SW
+		case 6: return new Int2(tl.x, p.y);					// W
+		case 7: return new Int2(tl);						// NW
+		default: return new Int2(p); // inside
+		}
+	}
+	
+	
+	public static MList<Int2> getBlockLine (Int2 p1, Int2 p2)
+	{
+		// http://tech-algorithm.com/articles/drawing-line-using-bresenham-algorithm/
+		var list = new MList<Int2>();
+		int x = p1.x;
+		int y = p1.y;
+		int w = p2.x - x;
+		int h = p2.y - y;
+		int dx1 = 0, dy1 = 0, dx2 = 0, dy2 = 0;
+		if (w<0) dx1 = -1; else if (w>0) dx1 = 1;
+		if (h<0) dy1 = -1; else if (h>0) dy1 = 1;
+		if (w<0) dx2 = -1; else if (w>0) dx2 = 1;
+		int longest = Math.Abs(w);
+		int shortest = Math.Abs(h);
+		if (!(longest>shortest)) {
+			longest = Math.Abs(h);
+			shortest = Math.Abs(w);
+			if (h<0) dy2 = -1; else if (h>0) dy2 = 1;
+			dx2 = 0;            
+	    }
+		int numerator = longest >> 1;
+		for (int i=0;i<=longest;i++) {
+			list.Add(new Int2(x,y));
+			numerator += shortest;
+			if (!(numerator<longest)) {
+				numerator -= longest;
+				x += dx1;
+				y += dy1;
+			} else {
+				x += dx2;
+				y += dy2;
+			}
+		}
+		return list;
+	}
+	
+	public static MList<Int2> getNeighbors(Int2 p, int max, int min)
+	{
+		UT.assert(max>=1 && min>=1 && max>=min);
+		// get set of neighbors in min/max range
+		var l = new MList<Int2>();
+		
+		for (int y=p.y-max; y<=p.y+max; y++)
+			for (int x=p.x-max; x<=p.x+max; x++)
+				if (p.chess(x,y)>=min)
+					l.Add(new Int2(x,y));
+		return l;
+	}
 
 	/* hex directions (y increases down)
 	 * HEX6:
