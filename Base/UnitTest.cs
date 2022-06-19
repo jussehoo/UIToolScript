@@ -17,8 +17,21 @@ public class MListTest
 		UT.print("Union: " + u);
 	}
 
+	[UnityEditor.MenuItem("Tools/TestCompactTime")]
+	private static void TestCompactTime()
+	{
+		for (int t = -100; t < 500; t += 50)
+		{
+			UT.print(t + " sec. -> " + Util.CompactTime(t));
+		}
+		for (int t = -1000; t < 50000; t += 700)
+		{
+			UT.print(t + " sec. -> " + Util.CompactTime(t));
+		}
+	}
+
 	[UnityEditor.MenuItem("Tools/MList test")]
-	private static void RunTest()
+	private static void TestMList()
 	{
 		UT.print("-------- MListTest start --------");
 		MList<int> l = new MList<int>();
