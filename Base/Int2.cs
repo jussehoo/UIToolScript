@@ -11,6 +11,7 @@ public class Int2
 	public Int2(float _x, float _y) { x = (int)_x; y = (int)_y; }
 	public Int2(double _x, double _y) { x = (int)_x; y = (int)_y; }
 	public Int2(Int2 i2) { x = i2.x; y = i2.y; }
+	public Int2 copy() { return new Int2(this); }
 
 	public void set(int _x, int _y) { x = _x; y = _y; }
 	public void set(Int2 i2) { x = i2.x; y = i2.y; }

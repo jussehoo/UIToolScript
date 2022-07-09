@@ -41,8 +41,7 @@ public class UT
 #if SERVER
 			System.Diagnostics.Debug.Assert(false,"ASSERTION FAILED: " + msg);
 #else
-			print("ASSERTION FAILED: " + msg);
-			UnityEngine.Assertions.Assert.IsTrue(false);
+			UnityEngine.Assertions.Assert.IsTrue(false, msg);
 #endif
 		}
 	}
