@@ -70,12 +70,12 @@ public class UIContainer : UIObject
 		{
 			var it = list.Iterator();
 			it.Next();
-			bounds = it.Value().GetRelativeRect(); // start with the first object
-			UT.print("UpdateBounds: rect " + it.Value().GetRelativeRect() + ", bounds " + bounds);
+			bounds = it.Value.GetRelativeRect(); // start with the first object
+			UT.print("UpdateBounds: rect " + it.Value.GetRelativeRect() + ", bounds " + bounds);
 			while (it.Next())
 			{
-				bounds = AMenu.Union(bounds, it.Value().GetRelativeRect());
-				UT.print("UpdateBounds: rect " + it.Value().GetRelativeRect() + ", bounds " + bounds);
+				bounds = AMenu.Union(bounds, it.Value.GetRelativeRect());
+				UT.print("UpdateBounds: rect " + it.Value.GetRelativeRect() + ", bounds " + bounds);
 			}
 		}
 	}

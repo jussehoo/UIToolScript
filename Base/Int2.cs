@@ -12,8 +12,8 @@ public class Int2
 	public Int2(double _x, double _y) { x = (int)_x; y = (int)_y; }
 	public Int2(Int2 i2) { x = i2.x; y = i2.y; }
 	public Int2 copy() { return new Int2(this); }
-
 	public void set(int _x, int _y) { x = _x; y = _y; }
+
 	public void set(Int2 i2) { x = i2.x; y = i2.y; }
 	public void add(int _x, int _y) { x += _x; y += _y; }
 	public void add(Int2 i2) { x += i2.x; y += i2.y; }
@@ -36,6 +36,15 @@ public class Int2
 		if (i > 0) return 1;
 		if (i < 0) return -1;
 		return 0;
+	}
+	public void clamp(int minX, int minY, int maxX, int maxY)
+	{
+		UT.assert(minX <= maxX && minY <= maxY);
+		// clamp inclusively
+		if (x < minX) x = minX;
+		if (y < minY) y = minY;
+		if (x > maxX) x = maxX;
+		if (y > maxY) y = maxY;
 	}
 		
 	// chess board math
@@ -214,6 +223,11 @@ public class Int2
 		return list;
 	}
 	
+	public static MList<Int2> getNeighbors(Int2 p)
+	{
+		return getNeighbors(p,1,1);
+	}
+
 	public static MList<Int2> getNeighbors(Int2 p, int max, int min)
 	{
 		UT.assert(max>=1 && min>=1 && max>=min);

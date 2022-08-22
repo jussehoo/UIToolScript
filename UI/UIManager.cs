@@ -39,7 +39,7 @@ public class UIManager : MonoBehaviour {
 		it.Next();
 		while (it.Next())
 		{
-			it.Value().gameObject.SetActive(false);
+			it.Value.gameObject.SetActive(false);
 		}
 		return m;
 	}
@@ -62,18 +62,18 @@ public class UIManager : MonoBehaviour {
 		var it = popups.Iterator(); // remove menu from the list
 		while (it.Next())
 		{
-			if (it.Value() == m)
+			if (it.Value == m)
 			{
-				Destroy(it.Value().gameObject);
+				Destroy(it.Value.gameObject);
 				it.Remove();
 			}
 		}
 		it = menus.Iterator(); // remove menu from the list
 		while (it.Next())
 		{
-			if (it.Value() == m)
+			if (it.Value == m)
 			{
-				Destroy(it.Value().gameObject);
+				Destroy(it.Value.gameObject);
 				it.Remove();
 			}
 		}
@@ -84,9 +84,9 @@ public class UIManager : MonoBehaviour {
 		var it = popups.Iterator(); // remove menu from the list
 		while (it.Next())
 		{
-			it.Value().SetClosed();
-			menus.RemoveEqual(it.Value());
-			Destroy(it.Value().gameObject);
+			it.Value.SetClosed();
+			menus.RemoveEqual(it.Value);
+			Destroy(it.Value.gameObject);
 			it.Remove();
 		}
 	}
@@ -96,15 +96,15 @@ public class UIManager : MonoBehaviour {
 		var it = menus.Iterator(); // remove menu from the list
 		while (it.Next())
 		{
-			it.Value().SetClosed();
-			Destroy(it.Value().gameObject);
+			it.Value.SetClosed();
+			Destroy(it.Value.gameObject);
 			it.Remove();
 		}
 		it = popups.Iterator(); // remove menu from the list
 		while (it.Next())
 		{
-			it.Value().SetClosed();
-			Destroy(it.Value().gameObject);
+			it.Value.SetClosed();
+			Destroy(it.Value.gameObject);
 			it.Remove();
 		}
 	}

@@ -23,7 +23,7 @@ public class MListIterator<T>
 	private MListNode<T> previous, current, next;
 
 	/// <summary>Value() (content) of the current node.</summary>
-	public T Value() { return current.value; }
+	public T Value { get { return current.value; } }
 	public void SetValue(T v) { current.value = v; }
 
 	public MListIterator(MList<T> _list, MListNode<T> _previous)
@@ -112,8 +112,8 @@ public class MListEnumerator<T> : IEnumerable<T>
 	private MList<T> list; MListIterator<T> it;
 	public MListEnumerator(MList<T> _list) { list = _list; it = list.Iterator(); }
 	IEnumerator IEnumerable.GetEnumerator()	{ yield return list.GetEnumerator(); }
-	IEnumerator<T> IEnumerable<T>.GetEnumerator() { while (it.Next()) yield return it.Value(); }
-	public T Current { get { return it.Value(); } }
+	IEnumerator<T> IEnumerable<T>.GetEnumerator() { while (it.Next()) yield return it.Value; }
+	public T Current { get { return it.Value; } }
 	public bool MoveNext() { return it.Next(); }
 }
 
@@ -188,7 +188,7 @@ public class MList<T>
 		var it = Iterator();
 		while (it.Next())
 		{
-			if (it.Value().Equals(value)) it.Remove();
+			if (it.Value.Equals(value)) it.Remove();
 		}
 	}
 	public int EqualIndex(T value, int minIndex = 0)
@@ -197,7 +197,7 @@ public class MList<T>
 		int index = 0;
 		while (it.Next())
 		{
-			if (it.Value().Equals(value) && index >= minIndex) return index;
+			if (it.Value.Equals(value) && index >= minIndex) return index;
 			index++;
 		}
 		return -1;
@@ -218,7 +218,7 @@ public class MList<T>
 		UT.assert(index >= 0 && index < size);
 		var it = Iterator();
 		while (index-- >= 0) it.Next();
-		return it.Value();
+		return it.Value;
 	}
 	public void AssertValid()
 	{
@@ -236,7 +236,7 @@ public class MList<T>
 				it.AssertValid();
 				n++;
 			}
-			UT.assert(it.Value().Equals(tail.value));
+			UT.assert(it.Value.Equals(tail.value));
 			UT.assert(n == size);
 			UT.assert(it.Finished());
 		}

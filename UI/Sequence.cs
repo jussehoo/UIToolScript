@@ -8,6 +8,61 @@ public class Sequence : MonoBehaviour
 
 	// TODO: ending condition (Action, time ending by delfault)
 	// TODO: simultaneous clips (IClip [little]sibling as a member)
+	
+
+	MList<IClip> list = new MList<IClip>();
+	private IClip current;
+	private bool destroyWhenFinished = false;
+
+	public void AddWait(float time)
+	{
+		list.AddLast(new Waiting(this, time));
+	}
+	public void AddRotateTowards(Vector3 targetRotation, float time)
+	{
+		list.AddLast(new RotateTowards(this, targetRotation, time));
+	}
+	public void AddMoveTo(Vector3 targetPosition, float time)
+	{
+		list.AddLast(new MoveTo(this, targetPosition, time));
+	}
+	public void AddLocalScaling(float from, float to, float time, float delay = 0f)
+	{
+		list.AddLast(new LocalScaling(this, from, to, time, delay));
+	}
+	public void AddImageColorLerp(Image image, Color from, Color to, float time)
+	{
+		list.AddLast(new ImageColorLerp(this, image, from, to, time));
+	}
+
+	private void Start()
+	{
+		Step();
+	}
+
+	void Update()
+	{
+		Step();
+		if (destroyWhenFinished && list.Size() == 0) Destroy(this);
+	}
+
+	private void Step()
+	{
+		float time = Time.deltaTime;
+		if (current == null)
+		{
+			if (list.Size() == 0) return;
+			current = list.First();
+			current.Init();
+		}
+		if (!current.Step())
+		{
+			list.RemoveFirst();
+			current = null;
+		}
+	}
+
+	// CLIPS: various animation types
 
 	private abstract class IClip
 	{
@@ -22,6 +77,12 @@ public class Sequence : MonoBehaviour
 			timeLeft -= Time.deltaTime;
 			return timeLeft > 0f; // return true if there's time left
 		}
+	}
+	private class Waiting : IClip
+	{
+		public Waiting(Sequence seq, float time) : base(seq, time) { }
+		public override void Init(){}
+		public override bool Step() { return UpdateTimer(); }
 	}
 	private class RotateTowards : IClip
 	{
@@ -67,7 +128,6 @@ public class Sequence : MonoBehaviour
 			{
 				// update position
 				seq.transform.position += velocity * Time.deltaTime;
-				UT.print("MoveTo: " + seq.transform.position);
 				return true;
 			}
 			seq.transform.position = targetPosition;
@@ -132,55 +192,6 @@ public class Sequence : MonoBehaviour
 			}
 			image.color = to;
 			return false;
-		}
-	}
-
-	MList<IClip> list = new MList<IClip>();
-	private IClip current;
-	private bool destroyWhenFinished = true;
-
-
-	public void AddRotateTowards(Vector3 targetRotation, float time)
-	{
-		list.AddLast(new RotateTowards(this, targetRotation, time));
-	}
-	public void AddMoveTo(Vector3 targetPosition, float time)
-	{
-		list.AddLast(new MoveTo(this, targetPosition, time));
-	}
-	public void AddLocalScaling(float from, float to, float time, float delay = 0f)
-	{
-		list.AddLast(new LocalScaling(this, from, to, time, delay));
-	}
-	public void AddImageColorLerp(Image image, Color from, Color to, float time)
-	{
-		list.AddLast(new ImageColorLerp(this, image, from, to, time));
-	}
-
-	private void Start()
-	{
-		Step();
-	}
-
-	void Update()
-	{
-		Step();
-		if (destroyWhenFinished && list.Size() == 0) Destroy(this);
-	}
-
-	private void Step()
-	{
-		float time = Time.deltaTime;
-		if (current == null)
-		{
-			if (list.Size() == 0) return;
-			current = list.First();
-			current.Init();
-		}
-		if (!current.Step())
-		{
-			list.RemoveFirst();
-			current = null;
 		}
 	}
 }

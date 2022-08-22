@@ -47,9 +47,9 @@ public class Events
 		var it = triggerEvents.Iterator();
 		while (it.Next())
 		{
-			if (it.Value().Check(s))
+			if (it.Value.Check(s))
 			{
-				it.Value().action.Invoke();
+				it.Value.action.Invoke();
 				it.Remove();
 			}
 		}
@@ -65,9 +65,9 @@ public class Events
 		var it = conditionalEvents.Iterator();
 		while (it.Next())
 		{
-			if (it.Value().condition())
+			if (it.Value.condition())
 			{
-				it.Value().act.Invoke();
+				it.Value.act.Invoke();
 				it.Remove();
 			}
 		}
@@ -76,9 +76,9 @@ public class Events
 		var iter = timedEvents.Iterator();
 		while (iter.Next())
 		{
-			if (iter.Value().time == currentStep)
+			if (iter.Value.time == currentStep)
 			{
-				iter.Value().act.Invoke();
+				iter.Value.act.Invoke();
 				iter.Remove();
 			}
 		}
