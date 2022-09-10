@@ -49,7 +49,8 @@ public class Int2
 		
 	// chess board math
 	public int manhattan(){return Math.Abs(x) + Math.Abs(y);}
-	public int manhattan(Int2 p){return Math.Abs(x - p.x) + Math.Abs(y - p.y);}
+	public int manhattan(Int2 p){return manhattan(p.x, p.y);}
+	public int manhattan(int x, int y){return Math.Abs(this.x - x) + Math.Abs(this.y - y);}
 	public int chess(Int2 a){return chessboardDistance(this, a);}
 	public int chess(int x, int y){return Math.Max(Math.Abs(this.x - x), Math.Abs(this.y - y));}
 	public static int chessboardDistance(Int2 a, Int2 b){return Math.Max(Math.Abs(a.x - b.x), Math.Abs(a.y - b.y));}
@@ -62,9 +63,9 @@ public class Int2
 	{
 		// rotate 90 CW around (ox,oy)
 		sub(ox,oy);
-		int tmp = y;
-		y = x;
-		x = -tmp -1; // -1!?!? (TODO: pariton/parillinen (-1 vai ei))
+		int tmp = x;
+		x = y;
+		y = -tmp;
 		add(ox,oy);
 	}
 	
@@ -189,6 +190,8 @@ public class Int2
 	
 	public static MList<Int2> getBlockLine (Int2 p1, Int2 p2)
 	{
+		// TODO: optimoi: anna array (ei Int2?) täytettäväksi
+
 		// http://tech-algorithm.com/articles/drawing-line-using-bresenham-algorithm/
 		var list = new MList<Int2>();
 		int x = p1.x;
@@ -228,7 +231,7 @@ public class Int2
 		return getNeighbors(p,1,1);
 	}
 
-	public static MList<Int2> getNeighbors(Int2 p, int max, int min)
+	public static MList<Int2> getNeighbors(Int2 p, int max, int min, bool manhattan = false)
 	{
 		UT.assert(max>=1 && min>=1 && max>=min);
 		// get set of neighbors in min/max range
@@ -236,8 +239,16 @@ public class Int2
 		
 		for (int y=p.y-max; y<=p.y+max; y++)
 			for (int x=p.x-max; x<=p.x+max; x++)
-				if (p.chess(x,y)>=min)
+			{
+				if (manhattan)
+				{
+					int dist = p.manhattan(x,y);
+					if (dist >= min && dist <= max)
+						l.Add(new Int2(x,y));
+				}
+				else if (p.chess(x,y) >= min)
 					l.Add(new Int2(x,y));
+			}
 		return l;
 	}
 

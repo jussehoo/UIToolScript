@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 
 
@@ -63,12 +64,7 @@ public class MListTest
 		l.AssertValid();
 		print(l); // "-1 0 1 2 2 3"
 
-		l = new MList<int>();
-		// fill list
-		for (int i = 0; i < FILL_SIZE; i++)
-		{
-			l.AddLast(100 + i);
-		}
+		l = CreateTestList(FILL_SIZE);
 		print(l);
 		UT.assert(l.Size() == FILL_SIZE);
 
@@ -96,11 +92,7 @@ public class MListTest
 		UT.assert(l.Size() == 0);
 
 		// empty by iterator
-		l = new MList<int>();
-		for (int i = 0; i < 2; i++)
-		{
-			l.AddLast(10 + i);
-		}
+		l = CreateTestList(2);
 		it = l.Iterator();
 		while (it.Next())
 		{
@@ -112,17 +104,61 @@ public class MListTest
 		}
 
 		// test remove last iterator
-		l = new MList<int>();
-		for (int i = 0; i < 2; i++)
-		{
-			l.AddLast(10 + i);
-		}
+		l = CreateTestList(2);
 		it = l.Iterator();
 		it.Next();
 		l.Remove(it);
 		l.AssertValid();
 
+		//loop test
+		l = CreateTestList(2);
+		it = l.Iterator();
+		while(it.Loop()) it.Remove();
+		
+		// fail test
+		MListFailTest(0);
+		MListFailTest(1);
+		MListFailTest(2);
+		MListFailTest(3);
+		MListFailTest(99); // default
+
 		UT.print("-------- MListTest end --------");
+	}
+
+	private static void MListFailTest(int test)
+	{
+		var l = CreateTestList(5);
+		var it = l.Iterator();
+		it.Next();
+		it.Remove();
+		it.Next();
+		switch(test)
+		{
+		case 0: l.AddFirst(1); break;
+		case 1: l.AddLast(1);break;
+		case 2: l.RemoveEqual(102); break;
+		case 3: {
+			var it2 = l.Iterator();
+			it2.Next();
+			it2.Remove();
+		} break;
+		default: l.RemoveFirst(); break;
+		}
+		try {
+			it.Next();
+			UT.trap("fail test: " + test); // fail if we end up here
+		} catch(MConcurrentModificationException) { }
+	}
+
+	private static MList<int> CreateTestList(int size)
+	{
+		var l = new MList<int>();
+		// fill list
+		for (int i = 0; i < size; i++)
+		{
+			l.AddLast(100 + i);
+		}
+		return l;
 	}
 
 	public static void print<T>(MList<T> l)

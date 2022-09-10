@@ -14,9 +14,9 @@ public class Sequence : MonoBehaviour
 	private IClip current;
 	private bool destroyWhenFinished = false;
 
-	public void AddWait(float time)
+	public void AddWait(float time, Action onUpdate = null)
 	{
-		list.AddLast(new Waiting(this, time));
+		list.AddLast(new Waiting(this, onUpdate, time));
 	}
 	public void AddRotateTowards(Vector3 targetRotation, float time)
 	{
@@ -26,6 +26,18 @@ public class Sequence : MonoBehaviour
 	{
 		list.AddLast(new MoveTo(this, targetPosition, time));
 	}
+	public void AddMoveTo2DArc(Vector3 targetPosition, float height, float time)
+	{
+		list.AddLast(new MoveTo2DArc(this, targetPosition, height, time));
+	}
+	public void AddMoveSmoothTo(Vector3 targetPosition, float time)
+	{
+		list.AddLast(new MoveSmoothTo(this, targetPosition, time));
+	}
+	public void AddShake(float amount, float time)
+	{
+		list.AddLast(new Shake(this, amount, time));
+	}
 	public void AddLocalScaling(float from, float to, float time, float delay = 0f)
 	{
 		list.AddLast(new LocalScaling(this, from, to, time, delay));
@@ -33,6 +45,10 @@ public class Sequence : MonoBehaviour
 	public void AddImageColorLerp(Image image, Color from, Color to, float time)
 	{
 		list.AddLast(new ImageColorLerp(this, image, from, to, time));
+	}
+	public void AddCallback(Action a)
+	{
+		list.AddLast(new Callback(this, a));
 	}
 
 	private void Start()
@@ -78,11 +94,22 @@ public class Sequence : MonoBehaviour
 			return timeLeft > 0f; // return true if there's time left
 		}
 	}
+	private class Callback : IClip
+	{
+		private Action action;
+		public Callback(Sequence seq, Action a) : base(seq, 0) { action = a; }
+		public override void Init(){}
+		public override bool Step() { action.Invoke(); return UpdateTimer(); }
+	}
 	private class Waiting : IClip
 	{
-		public Waiting(Sequence seq, float time) : base(seq, time) { }
+		private Action onUpdate;
+		public Waiting(Sequence seq, Action onUpdate, float time) : base(seq, time)
+		{
+			this.onUpdate = onUpdate;
+		}
 		public override void Init(){}
-		public override bool Step() { return UpdateTimer(); }
+		public override bool Step() { onUpdate?.Invoke(); return UpdateTimer(); }
 	}
 	private class RotateTowards : IClip
 	{
@@ -131,6 +158,90 @@ public class Sequence : MonoBehaviour
 				return true;
 			}
 			seq.transform.position = targetPosition;
+			return false;
+		}
+	}
+	private class MoveTo2DArc : IClip
+	{
+		Vector3 targetPosition, groundPosition, velocity;
+		float arcHeight;
+		public MoveTo2DArc(Sequence seq, Vector3 targetPosition, float arcHeight, float time) : base(seq, time)
+		{
+			this.targetPosition = targetPosition;
+			this.arcHeight = arcHeight;
+		}
+		public override void Init()
+		{
+			// calculate move vector relative to time
+			groundPosition = seq.transform.position;
+			velocity = targetPosition - seq.transform.position;
+			velocity /= timeLeft;
+		}
+		public override bool Step()
+		{
+			if (UpdateTimer())
+			{
+				// update position
+				groundPosition += velocity * Time.deltaTime;
+
+				// add arc height
+				
+				float delta = (totalTime - timeLeft) / totalTime;
+				float sin = Mathf.Sin(delta*3.14f);
+				//arcHeight = (arcHeight * sin);
+
+				seq.transform.position = groundPosition + ((arcHeight * sin) * Vector3.up);
+				return true;
+			}
+			seq.transform.position = targetPosition;
+			return false;
+		}
+	}
+	private class MoveSmoothTo : IClip
+	{
+		Vector3 origin, target;
+		public MoveSmoothTo(Sequence seq, Vector3 targetPosition, float time) : base(seq, time)
+		{
+			origin = seq.transform.position;
+			target = targetPosition;
+		}
+		public override void Init()
+		{
+		}
+		public override bool Step()
+		{
+			if (UpdateTimer())
+			{
+				// update position
+				seq.transform.position = Util.CosineInterpolate(origin, target, 1f - (timeLeft / totalTime));
+				return true;
+			}
+			seq.transform.position = target;
+			return false;
+		}
+	}
+	private class Shake : IClip
+	{
+		Vector3 origin;
+		float amount;
+		public Shake(Sequence seq, float _amount, float time) : base(seq, time)
+		{
+			amount = _amount;
+		}
+		public override void Init()
+		{
+			// calculate move vector relative to time
+			origin = seq.transform.position;
+		}
+		public override bool Step()
+		{
+			if (UpdateTimer())
+			{
+				// update position
+				seq.transform.position = origin + new Vector3(((UnityEngine.Random.value-.5f)*2f)*amount,((UnityEngine.Random.value-.5f)*2f)*amount,0f);
+				return true;
+			}
+			seq.transform.position = origin;
 			return false;
 		}
 	}

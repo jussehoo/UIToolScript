@@ -116,7 +116,25 @@ public static class Util
 		UT.assert0to1(factor);
 		return min + (max - min) * factor;
 	}
-    
+    static public float CosineInterpolate(
+		float a1,float a2,
+		float mu)
+	{
+		float mu2;
+
+		mu2 = (1-Mathf.Cos(mu*Mathf.PI))/2;
+		return(a1*(1-mu2)+a2*mu2);
+	}
+    static public Vector3 CosineInterpolate(
+		Vector3 v1, Vector3 v2,
+		float mu)
+	{
+		return new Vector3(
+			CosineInterpolate(v1.x, v2.x, mu),
+			CosineInterpolate(v1.y, v2.y, mu),
+			CosineInterpolate(v1.z, v2.z, mu)
+		);
+	}
 #if !SERVER
 	public static Vector2 WorldToCanvasPosition(RectTransform canvas, Camera camera, Vector3 position)
 	{

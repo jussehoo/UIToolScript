@@ -1,4 +1,6 @@
 
+using System;
+
 public class GridMask
 {
 	// general-purpose 2D int array, for masking, path-finding etc.
@@ -6,7 +8,7 @@ public class GridMask
 
 	public int [,] Mask { get; protected set; } // <0: unreached, >=0: distance from flood starting point
 
-	protected int width, height;
+	public readonly int width, height;
 
 	public delegate bool Condition(int val, int x, int y);
 
@@ -16,6 +18,10 @@ public class GridMask
 		height=_h;
 		Mask = new int[width,height];
 		if (clear) Clear();
+	}
+	public bool InRange(int x, int y)
+	{
+		return x>=0&&x<width&&y>=0&&y<height;
 	}
 	public void Clear()
 	{
@@ -70,6 +76,57 @@ public class GridMask
 		}
 		return s;
 	}
+	
+	// 2D grid raytracer, max. distance 6
+	// Define rays for one quarter, and then rotate the rays
+	// 4 times, 90 deg. around the starting point to cover the
+	// other quarters.
+
+	public const int rt6Rays = 6;
+	public const int rt6RayLength = 5;
+	public static int[,,] rt6 = new int[,,] {
+		{ {1,0}, {2,0}, {3,0}, {4,0}, {5,0} },
+		{ {1,0}, {2,1}, {3,1}, {4,1}, {0,0} }, 
+		{ {1,1}, {2,1}, {3,2}, {0,0}, {0,0} }, 
+		{ {1,1}, {2,2}, {0,0}, {0,0}, {0,0} },
+		{ {0,1}, {1,2}, {1,3}, {1,4}, {0,0} },
+		{ {0,1}, {1,2}, {2,3}, {0,0}, {0,0} },
+	};
+
+	public void Raytrace(int px, int py, int distance, Condition visible)
+	{
+		Mask[px,py] = 1;
+
+		Int2 pos = new Int2(), orig = new Int2(px,py);
+
+		for(int r = 0; r < rt6Rays; r++)
+		{
+			for (int rot = 0; rot < 4; rot++)
+			{
+				for (int a = 0; a < rt6RayLength; a++)
+				{
+					int dx = rt6[r,a,0];
+					int dy = rt6[r,a,1];
+					if (dx == 0 && dy == 0) break; // end of ray
+
+					pos.set(dx + px, dy + py);
+
+					for(int foo = 0; foo < rot; foo++) pos.rot90(px,py);
+
+					if (RaytraceCheck(pos, orig, distance, visible)) Mask[pos.x,pos.y] = 1;
+					else break;
+				}
+			}
+		}
+	}
+
+	private bool RaytraceCheck(Int2 p, Int2 orig, int distance, Condition visible)
+	{
+		if (p.manhattan(orig) >= distance) return false;
+		if (!InRange(p.x,p.y)) return false;
+		if (!visible(0, p.x, p.y)) return false;
+		return true;
+	}
 }
 
 public class FloodMask : GridMask
@@ -77,7 +134,7 @@ public class FloodMask : GridMask
 	private int maxReached;
 	
 	public int SurfaceSize = 0;
-	public bool Diagonal = true;
+	public bool Diagonal = false;
 	public int MaxDistance = 1;
 	
 	public delegate bool CanVisitDelegate(int x, int y);
@@ -93,10 +150,6 @@ public class FloodMask : GridMask
 	{
 	}	
 	
-	public bool InRange(int x, int y)
-	{
-		return x>=0&&x<width&&y>=0&&y<height;
-	}
 	//public virtual bool Enough() { return false; } // return true when flooding can be stopped; false otherwise
 	
 	private bool done = false;
@@ -151,7 +204,7 @@ public class FloodMask : GridMask
 			nodes = next;
 			next = new MList<Int2>();
 			dist++;
-			if (dist >= MaxDistance) break;
+			if (dist > MaxDistance) break;
 		}
 		maxReached = dist-2;
 

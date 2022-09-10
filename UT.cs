@@ -26,6 +26,14 @@ public class UT
 		Debug.Log(s);
 #endif
 	}
+	public static void error(string s)
+	{
+#if SERVER
+		System.Console.WriteLine("ERROR: " + s); // TODO: write to error stream
+#else
+		Debug.LogError(s);
+#endif
+	}
 	public static void verbose(string s)
 	{
 		print(s);
@@ -33,6 +41,10 @@ public class UT
 	public static void assert0to1(float f, string msg = "")
 	{
 		assert(f >= 0 && f <= 1, msg);
+	}
+	public static void assertNotNull(object o, string msg = "")
+	{
+		assert(o != null, msg);
 	}
 	public static void assert(bool assertion, string msg = "")
 	{
