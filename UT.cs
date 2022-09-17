@@ -1,4 +1,4 @@
-﻿#if !(UNITY_IOS || UNITY_ANDROID)
+﻿#if UNITY_EDITOR || UNITY_STANDALONE
 #define UT_MOUSE
 #endif
 #if !SERVER

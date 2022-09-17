@@ -1,5 +1,6 @@
 
 using System;
+using System.Text;
 
 public class GridMask
 {
@@ -69,12 +70,12 @@ public class GridMask
 	}
 	public string GetString()
 	{
-		string s="";
+		StringBuilder s = new StringBuilder();
 		for (int y=0; y<height; y++) {
-			for (int x=0; x<width; x++) s+=""+Mask[x,y]+" ";
-			s += "\n";
+			for (int x=0; x<width; x++) s.Append("").Append(Mask[x,y]<0?"-":Mask[x,y].ToString()).Append(" ");
+			s.Append("\n");
 		}
-		return s;
+		return s.ToString();
 	}
 	
 	// 2D grid raytracer, max. distance 6
@@ -122,7 +123,7 @@ public class GridMask
 
 	private bool RaytraceCheck(Int2 p, Int2 orig, int distance, Condition visible)
 	{
-		if (p.manhattan(orig) >= distance) return false;
+		if (p.manhattan(orig) > distance) return false;
 		if (!InRange(p.x,p.y)) return false;
 		if (!visible(0, p.x, p.y)) return false;
 		return true;
