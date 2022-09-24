@@ -50,6 +50,12 @@ public class Sequence : MonoBehaviour
 	{
 		list.AddLast(new Callback(this, a));
 	}
+	public delegate void CustomCallback (float t);
+	public void AddCustom(CustomCallback c, float time)
+	{
+		list.AddLast(new CustomClip(this, c, time));
+	}
+		
 
 	private void Start()
 	{
@@ -302,6 +308,28 @@ public class Sequence : MonoBehaviour
 				return true;
 			}
 			image.color = to;
+			return false;
+		}
+	}
+	private class CustomClip : IClip
+	{
+		private Sequence.CustomCallback callback;
+
+		public CustomClip(Sequence seq, Sequence.CustomCallback c, float time) : base(seq, time)
+		{
+			this.callback = c;
+		}
+
+		public override void Init()
+		{
+		}
+
+		public override bool Step()
+		{
+			if (UpdateTimer()) {
+				callback.Invoke(timeLeft / totalTime);
+				return true;
+			}
 			return false;
 		}
 	}

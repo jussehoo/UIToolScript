@@ -17,7 +17,7 @@ public class AButton : MonoBehaviour
 	public void Clicked()
 	{
 		if (action != null) action.Invoke();
-		else UT.print("AButton: no action");
+		else UT.Print("AButton: no action");
 
 		if (closeOnClick) menu.Close();
 	}

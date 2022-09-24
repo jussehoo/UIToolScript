@@ -52,7 +52,7 @@ public class AMenu : MonoBehaviour {
 
 	void OnDestroy()
 	{
-		UT.assert(closed == true);
+		UT.Assert(closed == true);
 	}
 
 	public void SetClosed()
@@ -171,7 +171,7 @@ public class AMenu : MonoBehaviour {
 		}
 		else
 		{
-			UT.trap("AMenu.InitializeButton: invalid orientation.");
+			UT.Trap("AMenu.InitializeButton: invalid orientation.");
 		}
 	}
 

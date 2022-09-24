@@ -21,7 +21,7 @@ public static class ArrayExtensions
 public class ASinPulse
 {
 	readonly float interval, height, offset;
-	float d;
+	public float Delta { get; private set; }
 	public ASinPulse(float _interval, float _height, float _offset = 0f)
 	{
 		interval = _interval;
@@ -30,13 +30,13 @@ public class ASinPulse
 	}
 	public float Get(float timeDelta)
 	{
-		d += timeDelta * interval * 3.14f;
-		return ((float)Math.Sin(d) * height) + offset;
+		Delta += timeDelta * interval * 3.14f;
+		return ((float)Math.Sin(Delta) * height) + offset;
 	}
 }
 public static class Util
 {
-	static public float clamp(float value, float min, float max)
+	static public float Clamp(float value, float min, float max)
 	{
 		if (value < min) return min;
 		if (value > max) return max;
@@ -96,7 +96,7 @@ public static class Util
 		return s;
 	}
 
-	static public float linearInterpolation(float x, float x0, float x1, float y0, float y1)
+	static public float LinearInterpolation(float x, float x0, float x1, float y0, float y1)
 	{
 //		|              / (x1,y1)
 //		|             /_____________ return value y
@@ -105,15 +105,15 @@ public static class Util
 //		|  (x0,y0) /  |
 //		|             x
 
-		UT.assert(x >= x0 && x <= x1);
-		UT.assert(x0 <= x1);
+		UT.Assert(x >= x0 && x <= x1);
+		UT.Assert(x0 <= x1);
 
 		if ((x1 - x0) == 0)	return (y0 + y1) / 2;
 		return y0 + (x - x0) * (y1 - y0) / (x1 - x0);
 	}
-	static public float linearInterpolation(float factor, float min, float max)
+	static public float LinearInterpolation(float factor, float min, float max)
 	{
-		UT.assert0to1(factor);
+		UT.Assert0to1(factor);
 		return min + (max - min) * factor;
 	}
     static public float CosineInterpolate(
@@ -151,7 +151,7 @@ public static class Util
 	private static int _unique = 333000;
 	public static int Unique() { return ++_unique; }
 	
-	public static MList<Int2> getBlockLine (Int2 p1, Int2 p2)
+	public static MList<Int2> GetBlockLine (Int2 p1, Int2 p2)
 	{
 		// http://tech-algorithm.com/articles/drawing-line-using-bresenham-algorithm/
 		MList<Int2>list = new MList<Int2>();
@@ -187,15 +187,15 @@ public static class Util
 		return list;
 	}
 	
-	public static MList<Int2> getNeighbors(Int2 p, int max, int min)
+	public static MList<Int2> GetNeighbors(Int2 p, int max, int min)
 	{
-		UT.assert(max>=1 && min>=1 && max>=min);
+		UT.Assert(max>=1 && min>=1 && max>=min);
 		// get set of neighbors in min/max range
 		MList<Int2> l = new MList<Int2>();
 		
 		for (int y=p.y-max; y<=p.y+max; y++)
 			for (int x=p.x-max; x<=p.x+max; x++)
-				if (p.chess(x,y)>=min)
+				if (p.Chess(x,y)>=min)
 					l.Add(new Int2(x,y));
 		return l;
 	}

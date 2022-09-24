@@ -11,14 +11,14 @@ public class UT
 
 	// Utilities
 
-	public static float randomFloat() { return (float) rnd.NextDouble(); }
+	public static float RandomFloat() { return (float) rnd.NextDouble(); }
 
-	public static void trap(string msg = "")
+	public static void Trap(string msg = "")
 	{
-		assert(false, msg);
+		Assert(false, msg);
 	}
 	
-	public static void print(string s)
+	public static void Print(string s)
 	{
 #if SERVER
 		System.Console.WriteLine(s);
@@ -26,7 +26,7 @@ public class UT
 		Debug.Log(s);
 #endif
 	}
-	public static void error(string s)
+	public static void Error(string s)
 	{
 #if SERVER
 		System.Console.WriteLine("ERROR: " + s); // TODO: write to error stream
@@ -34,19 +34,19 @@ public class UT
 		Debug.LogError(s);
 #endif
 	}
-	public static void verbose(string s)
+	public static void Verbose(string s)
 	{
-		print(s);
+		Print(s);
 	}
-	public static void assert0to1(float f, string msg = "")
+	public static void Assert0to1(float f, string msg = "")
 	{
-		assert(f >= 0 && f <= 1, msg);
+		Assert(f >= 0 && f <= 1, msg);
 	}
-	public static void assertNotNull(object o, string msg = "")
+	public static void AssertNotNull(object o, string msg = "")
 	{
-		assert(o != null, msg);
+		Assert(o != null, msg);
 	}
-	public static void assert(bool assertion, string msg = "")
+	public static void Assert(bool assertion, string msg = "")
 	{
 		if (!assertion)
 		{

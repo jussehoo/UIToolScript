@@ -71,7 +71,7 @@ public class MListIterator<T>
 			next = previous.Next;
 			AssertValid();
 			bool b = Next();
-			UT.assert(b);
+			UT.Assert(b);
 			AssertValid();
 			return true;
 		}
@@ -83,7 +83,7 @@ public class MListIterator<T>
 	public void Remove()
 	{
 		_StateCheck();
-		UT.assert(current != null);
+		UT.Assert(current != null);
 		list.Remove(this);
 		_StateRefresh();
 	}
@@ -97,7 +97,7 @@ public class MListIterator<T>
 	public void InsertBefore(T t)
 	{
 		_StateCheck();
-		UT.assert(current != null); // can't be beginning or end of list, or just deleted
+		UT.Assert(current != null); // can't be beginning or end of list, or just deleted
 		previous = list.InsertAfter(previous, t); // add new node and update iterator's previous
 		_StateRefresh();
 	}
@@ -135,23 +135,23 @@ public class MListIterator<T>
 	}
 	private void _StateAssert()
 	{
-		UT.assert(listState == list._State());
+		UT.Assert(listState == list._State());
 	}
 	public void AssertValid()
 	{
 		_StateAssert();
 		if (previous != null)
 		{
-			if (current == null) UT.assert(previous.Next == next);
-			else UT.assert(previous.Next == current);
+			if (current == null) UT.Assert(previous.Next == next);
+			else UT.Assert(previous.Next == current);
 		}
 		else if (current != null)
 		{
-			UT.assert(current.Next == next);
+			UT.Assert(current.Next == next);
 		}
 		else
 		{
-			UT.assert(next == null);
+			UT.Assert(next == null);
 		}
 	}
 }
@@ -270,7 +270,7 @@ public class MList<T>
 	{
 		// add a node after 'position', which can't be null
 		// special cases: first, only one, last
-		UT.assert(position != null);
+		UT.Assert(position != null);
 		state++;
 		MListNode<T> node = new MListNode<T> { value = t, Next = position.Next };
 		position.Next = node;
@@ -280,7 +280,7 @@ public class MList<T>
 	}
 	public T GetAt(int index)
 	{
-		UT.assert(index >= 0 && index < size);
+		UT.Assert(index >= 0 && index < size);
 		var it = Iterator();
 		while (index-- >= 0) it.Next();
 		return it.Value;
@@ -289,8 +289,8 @@ public class MList<T>
 	{
 		if (size == 0)
 		{
-			UT.assert(tail == null);
-			UT.assert(head.Next == null);
+			UT.Assert(tail == null);
+			UT.Assert(head.Next == null);
 		}
 		else
 		{
@@ -301,9 +301,9 @@ public class MList<T>
 				it.AssertValid();
 				n++;
 			}
-			UT.assert(it.Value.Equals(tail.value));
-			UT.assert(n == size);
-			UT.assert(it.Finished());
+			UT.Assert(it.Value.Equals(tail.value));
+			UT.Assert(n == size);
+			UT.Assert(it.Finished());
 		}
 	}
 }

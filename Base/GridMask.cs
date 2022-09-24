@@ -39,7 +39,7 @@ public class GridMask
 	}
 	public void Fill(int val, int minX, int minY, int maxX, int maxY, Condition c = null)
 	{
-		UT.assert(minX <= maxX && minY <= maxY);
+		UT.Assert(minX <= maxX && minY <= maxY);
 		
 		//clamp
 		if (minX < 0) minX=0;
@@ -110,9 +110,9 @@ public class GridMask
 					int dy = rt6[r,a,1];
 					if (dx == 0 && dy == 0) break; // end of ray
 
-					pos.set(dx + px, dy + py);
+					pos.Set(dx + px, dy + py);
 
-					for(int foo = 0; foo < rot; foo++) pos.rot90(px,py);
+					for(int foo = 0; foo < rot; foo++) pos.Rot90(px,py);
 
 					if (RaytraceCheck(pos, orig, distance, visible)) Mask[pos.x,pos.y] = 1;
 					else break;
@@ -123,7 +123,7 @@ public class GridMask
 
 	private bool RaytraceCheck(Int2 p, Int2 orig, int distance, Condition visible)
 	{
-		if (p.manhattan(orig) > distance) return false;
+		if (p.Manhattan(orig) > distance) return false;
 		if (!InRange(p.x,p.y)) return false;
 		if (!visible(0, p.x, p.y)) return false;
 		return true;
@@ -231,7 +231,7 @@ public class FloodMask : GridMask
 		int val = Mask[x,y];
 		if (val <= 0)
 		{	
-			UT.print("PathFinder: not reached (" + x + ", " + y + ")");
+			UT.Print("PathFinder: not reached (" + x + ", " + y + ")");
 			return null;
 		}
 
@@ -244,11 +244,11 @@ public class FloodMask : GridMask
 		while (val > 0)
 		{
 			bool found = false;
-			foreach(var p in Int2.getNeighbors(new Int2(x,y)))
+			foreach(var p in Int2.GetNeighbors(new Int2(x,y)))
 			{
 				if (InRange(p.x,p.y) && Mask[p.x,p.y] == val-1)
 				{
-					UT.print("PathFinder: step " + p.ToString());
+					UT.Print("PathFinder: step " + p.ToString());
 					list.AddFirst(p);
 					x = p.x; y = p.y;
 					found = true;
@@ -257,7 +257,7 @@ public class FloodMask : GridMask
 			}
 			if (!found)
 			{	
-				UT.print("PathFinder: next step not found...");
+				UT.Print("PathFinder: next step not found...");
 				return null;
 			}
 			val--;

@@ -14,8 +14,8 @@ public class MListTest
 		Rect r1 = Rect.MinMaxRect(0, 0, 3, 5);
 		Rect r2 = Rect.MinMaxRect(1, 1, 6, 2);
 		Rect u = AMenu.Union(r1, r2);
-		UT.assert(u.x == 0 && u.y == 0 && u.width == 6f && u.height == 5f);
-		UT.print("Union: " + u);
+		UT.Assert(u.x == 0 && u.y == 0 && u.width == 6f && u.height == 5f);
+		UT.Print("Union: " + u);
 	}
 
 	[UnityEditor.MenuItem("Tools/TestCompactTime")]
@@ -23,18 +23,18 @@ public class MListTest
 	{
 		for (int t = -100; t < 500; t += 50)
 		{
-			UT.print(t + " sec. -> " + Util.CompactTime(t));
+			UT.Print(t + " sec. -> " + Util.CompactTime(t));
 		}
 		for (int t = -1000; t < 50000; t += 700)
 		{
-			UT.print(t + " sec. -> " + Util.CompactTime(t));
+			UT.Print(t + " sec. -> " + Util.CompactTime(t));
 		}
 	}
 
 	[UnityEditor.MenuItem("Tools/MList test")]
 	private static void TestMList()
 	{
-		UT.print("-------- MListTest start --------");
+		UT.Print("-------- MListTest start --------");
 		MList<int> l = new MList<int>();
 
 		// insert first
@@ -66,7 +66,7 @@ public class MListTest
 
 		l = CreateTestList(FILL_SIZE);
 		print(l);
-		UT.assert(l.Size() == FILL_SIZE);
+		UT.Assert(l.Size() == FILL_SIZE);
 
 		// iterator insert and remove
 		it = l.Iterator();
@@ -89,7 +89,7 @@ public class MListTest
 		l.AssertValid();
 		l.RemoveAll();
 		l.AssertValid();
-		UT.assert(l.Size() == 0);
+		UT.Assert(l.Size() == 0);
 
 		// empty by iterator
 		l = CreateTestList(2);
@@ -122,7 +122,7 @@ public class MListTest
 		MListFailTest(3);
 		MListFailTest(99); // default
 
-		UT.print("-------- MListTest end --------");
+		UT.Print("-------- MListTest end --------");
 	}
 
 	private static void MListFailTest(int test)
@@ -146,7 +146,7 @@ public class MListTest
 		}
 		try {
 			it.Next();
-			UT.trap("fail test: " + test); // fail if we end up here
+			UT.Trap("fail test: " + test); // fail if we end up here
 		} catch(MConcurrentModificationException) { }
 	}
 
@@ -169,7 +169,7 @@ public class MListTest
 		{
 			s += "([" + (n++) + "] " + i + " )";
 		}
-		UT.print(s);
+		UT.Print(s);
 	}
 #endif
 }
