@@ -40,4 +40,10 @@ public class UIToolTopCanvas : Singleton<UIToolTopCanvas>
 		TopBlockedAction?.Invoke();
 		TopBlockedAction = null;
 	}
+	public void OpenDebugPanel()
+	{
+		DebugPanel.gameObject.SetActive(true);
+		DebugPanel.log.RefreshEntryButtons();
+	}
+
 }
