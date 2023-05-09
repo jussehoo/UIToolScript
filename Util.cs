@@ -21,7 +21,7 @@ public static class ArrayExtensions
 public class ASinPulse
 {
 	readonly float interval, height, offset;
-	public float Delta { get; private set; }
+	public float Delta;
 	public ASinPulse(float _interval, float _height, float _offset = 0f)
 	{
 		interval = _interval;
@@ -94,6 +94,54 @@ public static class Util
 			if (items >= MAX_ITEMS) break;
 		}
 		return s;
+	}
+
+	static public float OffsetToIncludeSegment(float w0, float w1, float s0, float s1, bool centralizeGreaterSegment = true)
+	{
+		// return minimal offset so that the window (w0 ... w1) includes the segment (s0 ... s1)
+		// for example:
+		//					w0-----------------w1
+		//					               s0------s1
+		//					                     <--| negative offset
+
+		UT.Assert(w0 <= w1);
+		UT.Assert(s0 <= s1);
+		float windowWidth = w1 - w0;
+		float segmentWidth = s1 - s0;
+
+		if (segmentWidth >= windowWidth)
+		{
+			// segment is bigger than window, so return offset to centralize
+			if (centralizeGreaterSegment) return OffsetToCentralizeSegment(w0, w1, s0, s1);
+			if (s1 < w1) return w1 - s1; // segment is on left
+			if (s0 > w0) return w0 - s0; // segment is on right
+		}
+		else
+		{
+			if (s1 > w1) return w1 - s1; // segment is on right
+			if (s0 < w0) return w0 - s0; // segment is on left
+		}
+		return 0f; // segment is already inside
+	}
+
+	static public float OffsetToCentralizeSegment(float w0, float w1, float s0, float s1)
+	{ 
+		UT.Assert(w0 <= w1);
+		UT.Assert(s0 <= s1);
+		float windowWidth = w1 - w0;
+		float segmentWidth = s1 - s0;
+		return w0 - s0 + ((windowWidth - segmentWidth) / 2f);
+	}
+
+	static public Rect Union(Rect r, float x, float y)
+	{
+		// if necessary, expand rect so that it contains (x, y)
+		return Rect.MinMaxRect(
+			Math.Min(r.xMin, x),
+			Math.Min(r.yMin, y),
+			Math.Max(r.xMax, x),
+			Math.Max(r.yMax, y)
+		);
 	}
 
 	static public float LinearInterpolation(float x, float x0, float x1, float y0, float y1)

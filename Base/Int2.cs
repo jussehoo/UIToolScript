@@ -75,6 +75,16 @@ public class Int2
 		if (i>end) return 1;
 		return 0;
 	}
+
+	public static int NeighborDir4(Int2 a, Int2 b)
+	{
+		// return Dir8 if a neighbor, or -1 otherwise
+		if (a.Equals(b.x + 1, b.y)) return E;
+		if (a.Equals(b.x - 1, b.y)) return W;
+		if (a.Equals(b.x, b.y + 1)) return N;
+		if (a.Equals(b.x, b.y - 1)) return S;
+		return -1;
+	}
 	
 	public const int N=0, NE=1, E=2, SE=3, S=4, SW=5, W=6, NW=7;
 	//
@@ -223,7 +233,22 @@ public class Int2
 		}
 		return list;
 	}
-	
+	public static MList<Int2> Get4Neighbors(Int2 p)
+	{
+		var list = new MList<Int2>();
+		list.Add(new Int2(p.x + 1, p.y));
+		list.Add(new Int2(p.x - 1, p.y));
+		list.Add(new Int2(p.x, p.y + 1));
+		list.Add(new Int2(p.x, p.y - 1));
+		return list;
+	}
+	public static bool AreNeighbors4(Int2 a, Int2 b)
+	{
+		foreach(var n in Get4Neighbors(a)) if (n.Equals(b)) return true;
+		return false;
+	}
+
+
 	public static MList<Int2> GetNeighbors(Int2 p)
 	{
 		return GetNeighbors(p,1,1);

@@ -20,6 +20,14 @@ public class GridMask
 		Mask = new int[width,height];
 		if (clear) Clear();
 	}
+	public int Get(Int2 p)
+	{
+		return Mask[p.x,p.y];
+	}
+	public int Get(int x, int y)
+	{
+		return Mask[x,y];
+	}
 	public bool InRange(int x, int y)
 	{
 		return x>=0&&x<width&&y>=0&&y<height;
@@ -71,7 +79,7 @@ public class GridMask
 	public string GetString()
 	{
 		StringBuilder s = new StringBuilder();
-		for (int y=0; y<height; y++) {
+		for (int y=height-1; y>=0; y--) {
 			for (int x=0; x<width; x++) s.Append("").Append(Mask[x,y]<0?"-":Mask[x,y].ToString()).Append(" ");
 			s.Append("\n");
 		}
@@ -86,12 +94,13 @@ public class GridMask
 	public const int rt6Rays = 6;
 	public const int rt6RayLength = 5;
 	public static int[,,] rt6 = new int[,,] {
-		{ {1,0}, {2,0}, {3,0}, {4,0}, {5,0} },
-		{ {1,0}, {2,1}, {3,1}, {4,1}, {0,0} }, 
-		{ {1,1}, {2,1}, {3,2}, {0,0}, {0,0} }, 
-		{ {1,1}, {2,2}, {0,0}, {0,0}, {0,0} },
-		{ {0,1}, {1,2}, {1,3}, {1,4}, {0,0} },
-		{ {0,1}, {1,2}, {2,3}, {0,0}, {0,0} },
+		{ {1,0}, {2,0}, {3,0}, {4,0}, {5,0} }, // - - - - -
+		{ {1,0}, {2,1}, {3,1}, {4,1}, {0,0} }, // - / - -
+		{ {1,1}, {2,1}, {3,2}, {0,0}, {0,0} }, // / - /
+		{ {1,1}, {1,2}, {2,3}, {0,0}, {0,0} }, // / | /
+		{ {1,1}, {2,2}, {0,0}, {0,0}, {0,0} }, // / /
+		{ {0,1}, {1,2}, {1,3}, {1,4}, {0,0} }, // | / | |
+		//{ {0,1}, {1,2}, {2,3}, {0,0}, {0,0} }, // | / /
 	};
 
 	public void Raytrace(int px, int py, int distance, Condition visible)
@@ -125,8 +134,7 @@ public class GridMask
 	{
 		if (p.Manhattan(orig) > distance) return false;
 		if (!InRange(p.x,p.y)) return false;
-		if (!visible(0, p.x, p.y)) return false;
-		return true;
+		return visible(0, p.x, p.y);
 	}
 }
 
@@ -139,10 +147,12 @@ public class FloodMask : GridMask
 	public int MaxDistance = 1;
 	
 	public delegate bool CanVisitDelegate(int x, int y);
-	public delegate bool CanStopDelegate(int x, int y);
+	public delegate bool CanFinishDelegate(int x, int y);
+	public delegate bool StopperDelegate(int x, int y);
 
 	public CanVisitDelegate CanVisit = null;
-	public CanStopDelegate CanStop = null;
+	public CanFinishDelegate CanFinish = null; // e.g. surface is big enough
+	public StopperDelegate Stopper = null; // e.g. collectable or a door
 
 	// TODO: add buffers to edges: no inRange checks!
 	// TODO: use for pathfinding
@@ -216,14 +226,22 @@ public class FloodMask : GridMask
 	{
 		if (CanVisit != null && !CanVisit(x,y)) return;
 
-		if (Mask[x,y] < 0 && InRange(x,y))//g.getCell(cand).isType(types))
+		if (Mask[x,y] < 0 && InRange(x,y))
 		{
 			Mask[x,y]=dist;
-			next.Add(new Int2(x,y));
+			if (Stopper == null || !Stopper(x,y)) // place where path would end?
+			{
+				next.Add(new Int2(x,y));
+			}
 			SurfaceSize++;
 			
-			if (CanStop != null && CanStop(x,y)) done = true;
+			if (CanFinish != null && CanFinish(x,y)) done = true;
 		}
+	}
+	
+	public MList<Int2> PathFinder(Int2 p)
+	{
+		return PathFinder(p.x, p.y);
 	}
 	
 	public MList<Int2> PathFinder(int x, int y)
@@ -248,7 +266,7 @@ public class FloodMask : GridMask
 			{
 				if (InRange(p.x,p.y) && Mask[p.x,p.y] == val-1)
 				{
-					UT.Print("PathFinder: step " + p.ToString());
+					//UT.Print("PathFinder: step " + p.ToString());
 					list.AddFirst(p);
 					x = p.x; y = p.y;
 					found = true;

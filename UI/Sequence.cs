@@ -84,6 +84,11 @@ public class Sequence : MonoBehaviour
 		}
 	}
 
+	public bool Done()
+	{
+		return current == null && list.Size() == 0;
+	}
+
 	// CLIPS: various animation types
 
 	private abstract class IClip

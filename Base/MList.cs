@@ -285,6 +285,13 @@ public class MList<T>
 		while (index-- >= 0) it.Next();
 		return it.Value;
 	}
+	public void RemoveAt(int index)
+	{
+		UT.Assert(index >= 0 && index < size);
+		var it = Iterator();
+		while (index-- >= 0) it.Next();
+		it.Remove();
+	}
 	public void AssertValid()
 	{
 		if (size == 0)
