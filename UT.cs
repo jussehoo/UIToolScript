@@ -2,16 +2,38 @@
 #define UT_MOUSE
 #endif
 #if !SERVER
-	using UnityEngine;
+using System;
+using UnityEngine;
 #endif
 
 public class UT
 {
+	public const bool DEBUG = 
+    
+	#if UT_RELEASE
+		#if UT_DEBUG
+			#error Can't define UT_DEBUG and UT_RELEASE
+		#endif
+		false
+	#elif UT_DEBUG
+		#if UT_RELEASE
+			#error Can't define UT_DEBUG and UT_RELEASE
+		#endif
+		true
+	#elif DEVELOPMENT_BUILD || UNITY_EDITOR
+		true
+	#else
+		#error Define UT_DEBUG or UT_RELEASE for device builds.
+    #endif
+	;
+
 	public static readonly System.Random rnd = new System.Random(1234567);
 
 	// Utilities
 
 	public static float RandomFloat() { return (float) rnd.NextDouble(); }
+	public static int   RandomInt()   { return rnd.Next(); }
+	internal static int RandomInt(int ceil)	{ return rnd.Next(ceil); }
 
 	public static void Trap(string msg = "")
 	{

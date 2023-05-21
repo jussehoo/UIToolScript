@@ -136,7 +136,7 @@ public class MListTest
 		{
 		case 0: l.AddFirst(1); break;
 		case 1: l.AddLast(1);break;
-		case 2: l.RemoveEqual(102); break;
+		case 2: l.Remove(102); break;
 		case 3: {
 			var it2 = l.Iterator();
 			it2.Next();
