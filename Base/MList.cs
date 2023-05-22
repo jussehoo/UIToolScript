@@ -247,7 +247,7 @@ public class MList<T>
 		}
 		return null;
 	}
-	public void RemoveEqual(T value)
+	public void Remove(T value)
 	{
 		var it = Iterator();
 		while (it.Next())
@@ -277,6 +277,18 @@ public class MList<T>
 		if (tail == position) tail = node;
 		size++;
 		return node;
+	}
+	public int Find(T x)
+	{
+		// return first index of _x_ or -1 if not found
+		int n = 0;
+		var it = Iterator();
+		while (it.Next())
+		{
+			if (it.Value.Equals(x)) return n;
+			n++;
+		}
+		return -1;
 	}
 	public T GetAt(int index)
 	{
