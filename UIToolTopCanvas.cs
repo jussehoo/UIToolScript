@@ -8,13 +8,10 @@ public class UIToolTopCanvas : Singleton<UIToolTopCanvas>
 	public DebugLog DebugLog;
 	public GameObject TopBlocker;
 	public GameLog Log;
-	public UnityEngine.Events.UnityAction TopBlockedAction { get; private set; } = null;
 
 	private void Awake()
 	{
 		TopBlocker.SetActive(false);
-		DebugPanel.gameObject.SetActive(false);
-		DebugLog.gameObject.SetActive(false);
 	}
 	
     void OnEnable()
@@ -35,15 +32,4 @@ public class UIToolTopCanvas : Singleton<UIToolTopCanvas>
 		}
 		DebugLog.AddEntry(condition, stackTrace, type);
 	}
-	public void TopBlockerClicked()
-	{
-		TopBlockedAction?.Invoke();
-		TopBlockedAction = null;
-	}
-	public void OpenDebugPanel()
-	{
-		DebugPanel.gameObject.SetActive(true);
-		DebugPanel.log.RefreshEntryButtons();
-	}
-
 }
