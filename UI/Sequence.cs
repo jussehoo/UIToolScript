@@ -26,6 +26,10 @@ public class Sequence : MonoBehaviour
 	{
 		list.AddLast(new MoveTo(this, targetPosition, time));
 	}
+	public void AddMoveLocalTo(Vector3 targetPosition, float time)
+	{
+		list.AddLast(new MoveLocalTo(this, targetPosition, time));
+	}
 	public void AddMoveTo2DArc(Vector3 targetPosition, float height, float time)
 	{
 		list.AddLast(new MoveTo2DArc(this, targetPosition, height, time));
@@ -169,6 +173,31 @@ public class Sequence : MonoBehaviour
 				return true;
 			}
 			seq.transform.position = targetPosition;
+			return false;
+		}
+	}
+	private class MoveLocalTo : IClip
+	{
+		Vector3 targetPosition, velocity;
+		public MoveLocalTo(Sequence seq, Vector3 targetPosition, float time) : base(seq, time)
+		{
+			this.targetPosition = targetPosition;
+		}
+		public override void Init()
+		{
+			// calculate move vector relative to time
+			velocity = targetPosition - seq.transform.localPosition;
+			velocity /= timeLeft;
+		}
+		public override bool Step()
+		{
+			if (UpdateTimer())
+			{
+				// update local position
+				seq.transform.localPosition += velocity * Time.deltaTime;
+				return true;
+			}
+			seq.transform.localPosition = targetPosition;
 			return false;
 		}
 	}

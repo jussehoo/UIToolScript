@@ -9,7 +9,7 @@ public class UIToolTopCanvas : Singleton<UIToolTopCanvas>
 	public GameObject TopBlocker;
 	public GameLog Log;
 	public UnityEngine.Events.UnityAction TopBlockedAction { get; private set; } = null;
-	public Floater FloaterPrefab;
+	public FloaterCtrl FloaterPrefab;
 
 	public GameObject [] RemoveForRealease;
 
@@ -44,11 +44,11 @@ public class UIToolTopCanvas : Singleton<UIToolTopCanvas>
 		}
 		DebugLog.AddEntry(condition, stackTrace, type);
 	}
-	public void AddFloater(string s)
+	public void AddFloater(string text, Color? c, Transform _anchor, bool _sticky = false)
 	{
 		var go = Instantiate(FloaterPrefab.gameObject, transform);
-		var f = go.GetComponent<Floater>();
-		f.Label.text = s;
+		var f = go.GetComponent<FloaterCtrl>();
+		f.Initialize(text, c, _anchor, _sticky);
 	}
 	public void TopBlockerClicked()
 	{

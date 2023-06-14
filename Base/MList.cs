@@ -27,7 +27,7 @@ public class MListIterator<T>
 	private MList<T> list;
 	private MListNode<T> previous, current, next;
 
-	/// <summary>Value() (content) of the current node.</summary>
+	/// <summary>Content of the current node.</summary>
 	public T Value { get { return current.value; } }
 	public void SetValue(T v) { _StateCheck(); current.value = v; }
 

@@ -193,6 +193,19 @@ public static class Util
 		temp.y -= canvas.sizeDelta.y * canvas.pivot.y;
 		return temp;
 	}
+	public static Rect GetWorldRect(RectTransform rectTransform)
+	{
+		Vector3[] corners = new Vector3[4];
+		rectTransform.GetWorldCorners(corners);
+		// Get the bottom left corner.
+		Vector3 position = corners[0];
+         
+		Vector2 size = new Vector2(
+			rectTransform.lossyScale.x * rectTransform.rect.size.x,
+			rectTransform.lossyScale.y * rectTransform.rect.size.y);
+ 
+		return new Rect(position, size);
+	}
 #endif
 
 	// Unique int getter with a recognizable Value(), for constant ID's etc.

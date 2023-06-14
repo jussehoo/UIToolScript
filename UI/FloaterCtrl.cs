@@ -17,6 +17,7 @@ public class FloaterCtrl : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
 	{
+		cam = Camera.main;
 		tmp = GetComponentInChildren<TextMeshProUGUI>();
 	}
 	

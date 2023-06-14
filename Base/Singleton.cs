@@ -7,6 +7,9 @@
 			}
 source: http://wiki.unity3d.com/index.php/Singleton
 */
+
+// TODO: check that T is this type
+
 public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
 {
 	private static bool m_ShuttingDown = false;
