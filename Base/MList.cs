@@ -304,6 +304,18 @@ public class MList<T>
 		while (index-- >= 0) it.Next();
 		it.Remove();
 	}
+	public T[] ToArray()
+	{
+		T[]a = new T[size];
+		int i = 0;
+		var it = Iterator();
+		while (it.Next())
+		{
+			a[i] = it.Value;
+			i++;
+		}
+		return a;
+	}
 	public void AssertValid()
 	{
 		if (size == 0)
