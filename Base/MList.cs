@@ -278,6 +278,10 @@ public class MList<T>
 		size++;
 		return node;
 	}
+	public bool Contains(T x)
+	{
+		return Find(x) >= 0;
+	}
 	public int Find(T x)
 	{
 		// return first index of _x_ or -1 if not found
