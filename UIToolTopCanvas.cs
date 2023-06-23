@@ -44,11 +44,13 @@ public class UIToolTopCanvas : Singleton<UIToolTopCanvas>
 		}
 		DebugLog.AddEntry(condition, stackTrace, type);
 	}
-	public void AddFloater(string text, Color? c, Transform _anchor, bool _sticky = false)
+	public FloaterCtrl AddFloater(string text, Color? c, Transform _anchor, bool _sticky = false)
 	{
 		var go = Instantiate(FloaterPrefab.gameObject, transform);
+		go.transform.position = _anchor.position;
 		var f = go.GetComponent<FloaterCtrl>();
 		f.Initialize(text, c, _anchor, _sticky);
+		return f;
 	}
 	public void TopBlockerClicked()
 	{

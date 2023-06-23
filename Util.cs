@@ -260,4 +260,11 @@ public static class Util
 					l.Add(new Int2(x,y));
 		return l;
 	}
+
+	// Miscellaneous
+
+	public static void Repeat(int repeatCount, Action action)
+	{
+		for (int i = 0; i < repeatCount; i++) action();
+	}
 }

@@ -21,12 +21,21 @@ public class FloaterCtrl : MonoBehaviour {
 		tmp = GetComponentInChildren<TextMeshProUGUI>();
 	}
 	
+	public delegate bool EndConditionDelegate();
+	public EndConditionDelegate EndCondition;
+
 	// Update is called once per frame
 	void LateUpdate ()
 	{
+		if (EndCondition != null && EndCondition())
+		{
+			Destroy(gameObject);
+			return;
+		}
+
 		if (pulse != null)
 		{
-			float p = pulse.Get(Time.deltaTime);
+			float p = pulse.Get(Time.unscaledDeltaTime);
 			tmp.transform.localScale = new Vector3(p,p,p);
 		}
 
@@ -39,7 +48,7 @@ public class FloaterCtrl : MonoBehaviour {
 					worldPosition = anchor.position;
 				}
 				transform.position = cam.WorldToScreenPoint(worldPosition.Value + (2 * Vector3.up));
-				offset += speed * Time.deltaTime;
+				offset += speed * Time.unscaledDeltaTime;
 
 				transform.localPosition = new Vector2(
 					transform.localPosition.x + offset.x,
@@ -48,14 +57,14 @@ public class FloaterCtrl : MonoBehaviour {
 			else
 			{
 				transform.localPosition = new Vector2(
-					transform.localPosition.x + speed.x * Time.deltaTime,
-					transform.localPosition.y + speed.y * Time.deltaTime);
+					transform.localPosition.x + speed.x * Time.unscaledDeltaTime,
+					transform.localPosition.y + speed.y * Time.unscaledDeltaTime);
 			}
 			
 			//slow down
-			speed *= 1f - (.5f * Time.deltaTime);
+			speed *= 1f - (.5f * Time.unscaledDeltaTime);
 
-			lifeTime -= Time.deltaTime;
+			lifeTime -= Time.unscaledDeltaTime;
 		}
 		else if (!sticky)
 		{
