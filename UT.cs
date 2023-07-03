@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class UT
 {
-	public const bool DEBUG = 
+	public static readonly bool DEBUG = 
     
 	#if UT_RELEASE
 		#if UT_DEBUG

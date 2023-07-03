@@ -52,7 +52,16 @@ public static class Util
 	// for a project, modify in the project's code
 	public static int MAX_HOURS_TO_SHOW_MINUTES = 1;
 	public static int MAX_MINUTES_TO_SHOW_SECONDS = 1;
-
+	
+	static public string TimerTime(int sec)
+	{
+		string s;
+		if (sec >= 60) s = (sec / 60).ToString() + ":";
+		else s = ":";
+		if (sec % 60 / 10 < 1) s += "0";
+		s += (sec % 60).ToString();
+		return s;
+	}
 	static public string CompactTime(int sec)
 	{
 		// time in a compact text format
