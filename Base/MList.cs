@@ -1,11 +1,7 @@
-﻿// (C) 2018, single-linked list
+﻿// (C) 2018-2023, single-linked list
 
 // TODO
-//		- Insert: before or after curret?
-//		- Exceptions and exception tests.
-//		- Prevent concurrent modification. List operations and iterators have unique IDs.
-//		- Add/remove by index.
-//		- Iterator/enumerator with a condition.
+//		- "Where(x)", iterator/enumerator with a condition.
 
 using System;
 using System.Collections;
