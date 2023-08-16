@@ -30,8 +30,9 @@ public class UT
 	public static readonly System.Random rnd = new System.Random(1234567);
 
 	// Utilities
-
+	
 	public static float RandomFloat() { return (float) rnd.NextDouble(); }
+	public static float RandomFloat(float multiplier) { return (float) rnd.NextDouble() * multiplier; }
 	public static int   RandomInt()   { return rnd.Next(); }
 	internal static int RandomInt(int ceil)	{ return rnd.Next(ceil); }
 
@@ -54,6 +55,14 @@ public class UT
 		System.Console.WriteLine("ERROR: " + s); // TODO: write to error stream
 #else
 		Debug.LogError(s);
+#endif
+	}
+	public static void Warning(string s)
+	{
+#if SERVER
+		System.Console.WriteLine("WARNING: " + s);
+#else
+		Debug.LogWarning(s);
 #endif
 	}
 	public static void Verbose(string s)
