@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 #if !SERVER
 using UnityEngine;
  
@@ -36,10 +37,16 @@ public class ASinPulse
 }
 public static class Util
 {
-	static public float Clamp(float value, float min, float max)
+	static public float Clamp(float value, float minInclusive, float maxInclusive)
 	{
-		if (value < min) return min;
-		if (value > max) return max;
+		if (value < minInclusive) return minInclusive;
+		if (value > maxInclusive) return maxInclusive;
+		return value;
+	}
+	static public int Clamp(int value, int minInclusive, int maxInclusive)
+	{
+		if (value < minInclusive) return minInclusive;
+		if (value > maxInclusive) return maxInclusive;
 		return value;
 	}
 	
@@ -192,6 +199,29 @@ public static class Util
 			CosineInterpolate(v1.z, v2.z, mu)
 		);
 	}
+	public const int RIGHT = 1, LEFT = -1, ZERO = 0;
+	public static int DirectionOfPoint(Vector2 A, Vector2 B, Vector2 P)
+	{
+		//    A *
+		//       \
+		//        \   * P (left)
+		//         \
+		//        B *
+		//
+		// source: https://www.geeksforgeeks.org/direction-point-line-segment/
+		// subtracting co-ordinates of point A from
+		// B and P, to make A as origin
+		B.x -= A.x;
+		B.y -= A.y;
+		P.x -= A.x;
+		P.y -= A.y;
+ 
+		
+		float cp = B.x * P.y - B.y * P.x;	// Determining cross Product
+		if (cp > 0) return RIGHT;			// return RIGHT if cross product is positive
+		if (cp < 0) return LEFT;			// return LEFT if cross product is negative
+		return ZERO;						// return ZERO if cross product is zero.
+	}
 #if !SERVER
 	public static Vector2 WorldToCanvasPosition(RectTransform canvas, Camera camera, Vector3 position)
 	{
@@ -296,5 +326,18 @@ public static class Util
 		if (number >= 4) return "IV" + ToRoman(number - 4);
 		if (number >= 1) return "I" + ToRoman(number - 1);
 		throw new Exception("Impossible state reached");
+	}
+	
+	internal static T Get<T>(MonoBehaviour m)
+	{
+		var c = m.GetComponent<T>();
+		UT.AssertNotNull(c);
+		return c;
+	}
+	internal static T Get<T>(GameObject m)
+	{
+		var c = m.GetComponent<T>();
+		UT.AssertNotNull(c);
+		return c;
 	}
 }
