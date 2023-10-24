@@ -8,39 +8,40 @@ using UnityEngine;
 
 public class UT
 {
-	public static readonly bool DEBUG = 
-    
-	#if UT_RELEASE
-		#if UT_DEBUG
-			#error Can't define UT_DEBUG and UT_RELEASE
-		#endif
+	public static readonly bool DEBUG =
+
+#if UT_RELEASE
+#if UT_DEBUG
+#error Can't define UT_DEBUG and UT_RELEASE
+#endif
 		false
-	#elif UT_DEBUG
-		#if UT_RELEASE
-			#error Can't define UT_DEBUG and UT_RELEASE
-		#endif
+#elif UT_DEBUG
+#if UT_RELEASE
+#error Can't define UT_DEBUG and UT_RELEASE
+#endif
 		true
-	#elif DEVELOPMENT_BUILD || UNITY_EDITOR
+#elif DEVELOPMENT_BUILD || UNITY_EDITOR
 		true
-	#else
-		#error Define UT_DEBUG or UT_RELEASE for device builds.
-    #endif
+#else
+#error Define UT_DEBUG or UT_RELEASE for device builds.
+#endif
 	;
 
 	public static readonly System.Random rnd = new System.Random(1234567);
+	public static bool MousePointer = false;
 
 	// Utilities
-	
-	public static float RandomFloat() { return (float) rnd.NextDouble(); }
-	public static float RandomFloat(float multiplier) { return (float) rnd.NextDouble() * multiplier; }
-	public static int   RandomInt()   { return rnd.Next(); }
-	internal static int RandomInt(int ceil)	{ return rnd.Next(ceil); }
+
+	public static float RandomFloat() { return (float)rnd.NextDouble(); }
+	public static float RandomFloat(float multiplier) { return (float)rnd.NextDouble() * multiplier; }
+	public static int RandomInt() { return rnd.Next(); }
+	internal static int RandomInt(int ceil) { return rnd.Next(ceil); }
 
 	public static void Trap(string msg = "")
 	{
 		Assert(false, msg);
 	}
-	
+
 	public static void Print(string s)
 	{
 #if SERVER
@@ -94,67 +95,60 @@ public class UT
 
 	public static Vector2? MousePosition()
 	{
-#if UT_MOUSE
-		return Input.mousePosition;
-#else
-		return null;
-#endif
+		if (MousePointer)
+			return Input.mousePosition;
+		else
+			return null;
 	}
 
 	public static Vector2? PointerPosition()
 	{
 		if (!IsTouching()) return null;
-#if UT_MOUSE
-		return Input.mousePosition;
-#else
-		return Input.GetTouch(0).position;
-#endif
+		if (MousePointer)
+			return Input.mousePosition;
+		else
+			return Input.GetTouch(0).position;
 	}
-	
+
 	public static bool IsTouching()
 	{
-#if UT_MOUSE
-		return Input.GetMouseButton(0);
-#else
-		return Input.touchCount > 0;
-#endif
+		if (MousePointer)
+			return Input.GetMouseButton(0);
+		else
+			return Input.touchCount > 0;
 	}
-	
+
 	public static bool IsLeftButtonDown()
 	{
-#if UT_MOUSE
-		return Input.GetMouseButton(0);
-#else
-		return false;
-#endif
+		if (MousePointer)
+			return Input.GetMouseButton(0);
+		else
+			return false;
 	}
 
 	public static bool IsRightButtonDown()
 	{
-#if UT_MOUSE
-		return Input.GetMouseButton(1);
-#else
-		return false;
-#endif
+		if (MousePointer)
+			return Input.GetMouseButton(1);
+		else
+			return false;
 	}
 
 	public static bool TouchStarted()
 	{
 		// true on first frame when start touching
-#if UT_MOUSE
-		return Input.GetMouseButtonDown(0);
-#else
-		return Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Began;
-#endif
+		if (MousePointer)
+			return Input.GetMouseButtonDown(0);
+		else
+			return Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Began;
 	}
 	public static bool TouchEnded()
 	{
 		// true on first frame when stop touching
-#if UT_MOUSE
-		return Input.GetMouseButtonUp(0);
-#else
-		return Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Ended;
-#endif
+		if (MousePointer)
+			return Input.GetMouseButtonUp(0);
+		else
+			return Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Ended;
 	}
 
 	public static float VerticalFOV(float hFOVInDeg, float aspectRatio)

@@ -59,7 +59,12 @@ public class Sequence : MonoBehaviour
 	{
 		list.AddLast(new CustomClip(this, c, time));
 	}
-		
+
+	public void StopAll()
+	{
+		current = null;
+		list.RemoveAll();
+	}
 
 	private void Start()
 	{

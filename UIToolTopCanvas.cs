@@ -6,7 +6,7 @@ public class UIToolTopCanvas : Singleton<UIToolTopCanvas>
 
 	public DebugPanel DebugPanel;
 	public DebugLog DebugLog;
-	public GameObject TopBlocker;
+	public GameObject TopBlocker, DebugButton;
 	public GameLog Log;
 	public UnityEngine.Events.UnityAction TopBlockedAction { get; private set; } = null;
 	public FloaterCtrl FloaterPrefab;
@@ -44,10 +44,26 @@ public class UIToolTopCanvas : Singleton<UIToolTopCanvas>
 		}
 		DebugLog.AddEntry(condition, stackTrace, type);
 	}
+
+	private float floaterOffset=0,floaterLastTime=0;
+
 	public FloaterCtrl AddFloater(string text, Color? c, Transform _anchor, bool _sticky = false)
 	{
+		// prevent overlapping
+		if (floaterLastTime < Time.time - 2f)
+		{
+			floaterOffset = 0;
+		}
+		else
+		{
+			floaterOffset -= FloaterPrefab.GetComponent<RectTransform>().sizeDelta.y / 2f;
+		}
+
+		floaterLastTime = Time.time;
+
 		var go = Instantiate(FloaterPrefab.gameObject, transform);
 		go.transform.position = _anchor.position;
+		go.transform.localPosition = go.transform.localPosition + (floaterOffset * Vector3.up);
 		var f = go.GetComponent<FloaterCtrl>();
 		f.Initialize(text, c, _anchor, _sticky);
 		return f;
