@@ -1,5 +1,6 @@
 
 using System;
+using System.Collections.Generic;
 using System.Text;
 
 public class GridMask
@@ -61,6 +62,12 @@ public class GridMask
 				if (c != null && !c(val, x, y)) continue; // check if it fills the condition
 				Mask[x,y]=val;
 			}
+	}
+
+	internal MList<Int2> GetPointList(int gte = 1)
+	{
+		// points that have value >= gte (greater than or equal)
+		return GetPointList(delegate (int v,int x,int y){ return v >= gte; });
 	}
 	public MList<Int2> GetPointListOfValue(int val)
 	{
@@ -146,7 +153,7 @@ public class FloodMask : GridMask
 	public bool Diagonal = false;
 	public int MaxDistance = 1;
 	
-	public delegate bool CanVisitDelegate(int x, int y);
+	public delegate bool CanVisitDelegate(int x, int y, int dist);
 	public delegate bool CanFinishDelegate(int x, int y);
 	public delegate bool StopperDelegate(int x, int y);
 
@@ -224,7 +231,7 @@ public class FloodMask : GridMask
 	
 	private void FloodVisit(int x, int y, int dist, MList<Int2> next)
 	{
-		if (CanVisit != null && !CanVisit(x,y)) return;
+		if (CanVisit != null && !CanVisit(x,y,dist)) return;
 
 		if (Mask[x,y] < 0 && InRange(x,y))
 		{
@@ -242,6 +249,20 @@ public class FloodMask : GridMask
 	public MList<Int2> PathFinder(Int2 p)
 	{
 		return PathFinder(p.x, p.y);
+	}
+	
+	public MList<Int2> PathFinderNextTo(Int2 p)
+	{
+		// get smallest neightbor
+		Int2 candidate = null;
+		foreach(var neighbor in Int2.Get4Neighbors(p))
+		{
+			if (Mask[neighbor.x,neighbor.y] <= 0) continue;
+			if (candidate == null) candidate = neighbor;
+			else if (Get(candidate) > Get(neighbor)) candidate = neighbor;
+		}
+		if (candidate == null) return null;
+		return PathFinder(candidate.x, candidate.y);
 	}
 	
 	public MList<Int2> PathFinder(int x, int y)
@@ -262,7 +283,7 @@ public class FloodMask : GridMask
 		while (val > 0)
 		{
 			bool found = false;
-			foreach(var p in Int2.GetNeighbors(new Int2(x,y)))
+			foreach(var p in Int2.Get4Neighbors(new Int2(x,y)))
 			{
 				if (InRange(p.x,p.y) && Mask[p.x,p.y] == val-1)
 				{

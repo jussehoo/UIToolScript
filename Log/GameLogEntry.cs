@@ -19,7 +19,7 @@ public class GameLogEntry : MonoBehaviour
 
 	public void Setup(string text, Color color, Transform container)
 	{
-		EntryText.text = text.ToUpper();
+		EntryText.text = text;
 		EntryText.color = color;
 		this.container = container;
 		lifeTime = DEFAULT_LIFE_TIME;

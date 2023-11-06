@@ -11,14 +11,14 @@ public class UT
 	public static readonly bool DEBUG =
 
 #if UT_RELEASE
-#if UT_DEBUG
-#error Can't define UT_DEBUG and UT_RELEASE
-#endif
+	#if UT_DEBUG
+	#error Can't define UT_DEBUG and UT_RELEASE
+	#endif
 		false
 #elif UT_DEBUG
-#if UT_RELEASE
-#error Can't define UT_DEBUG and UT_RELEASE
-#endif
+	#if UT_RELEASE
+	#error Can't define UT_DEBUG and UT_RELEASE
+	#endif
 		true
 #elif DEVELOPMENT_BUILD || UNITY_EDITOR
 		true
