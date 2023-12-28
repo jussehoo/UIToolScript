@@ -1,7 +1,5 @@
-﻿using System;
+﻿using System.Text;
 using UnityEngine;
-
-
 
 public class MListTest
 {
@@ -21,14 +19,16 @@ public class MListTest
 	[UnityEditor.MenuItem("Tools/TestCompactTime")]
 	private static void TestCompactTime()
 	{
+		var sb = new StringBuilder();
 		for (int t = -100; t < 500; t += 50)
 		{
-			UT.Print(t + " sec. -> " + Util.CompactTime(t));
+			sb.AppendLine(t + " sec. -> " + Util.CompactTime(t));
 		}
 		for (int t = -1000; t < 50000; t += 700)
 		{
-			UT.Print(t + " sec. -> " + Util.CompactTime(t));
+			sb.AppendLine(t + " sec. -> " + Util.CompactTime(t));
 		}
+		UT.Print(sb.ToString());
 	}
 
 	[UnityEditor.MenuItem("Tools/MList test")]
