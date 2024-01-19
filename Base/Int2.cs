@@ -44,7 +44,15 @@ public class Int2
 		if (x > maxX) x = maxX;
 		if (y > maxY) y = maxY;
 	}
-		
+	public bool Contains(Int2 p)
+	{
+		return ContainsExcl(p.x, p.y);
+	}
+	public bool ContainsExcl(int _x, int _y)
+	{
+		return _x >= 0 && _y >= 0 && _x < x && _y < y;
+	}
+
 	// chess board math
 	public int Manhattan(){return Math.Abs(x) + Math.Abs(y);}
 	public int Manhattan(Int2 p){return Manhattan(p.x, p.y);}

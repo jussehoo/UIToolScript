@@ -27,7 +27,7 @@ public class UT
 #endif
 	;
 
-	public static readonly System.Random rnd = new System.Random(1234567);
+	public static readonly System.Random rnd = new System.Random((int)DateTime.Now.Ticks);
 	public static bool MousePointer = false;
 
 	// Utilities
