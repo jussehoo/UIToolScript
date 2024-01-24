@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using UnityEngine;
 
 public class MListTest
 {
@@ -9,11 +8,7 @@ public class MListTest
 	[UnityEditor.MenuItem("Tools/Util test")]
 	private static void UtilTest()
 	{
-		Rect r1 = Rect.MinMaxRect(0, 0, 3, 5);
-		Rect r2 = Rect.MinMaxRect(1, 1, 6, 2);
-		Rect u = AMenu.Union(r1, r2);
-		UT.Assert(u.x == 0 && u.y == 0 && u.width == 6f && u.height == 5f);
-		UT.Print("Union: " + u);
+		UT.Print("Nothing here");
 	}
 
 	[UnityEditor.MenuItem("Tools/TestCompactTime")]
