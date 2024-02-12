@@ -28,7 +28,12 @@ public class UT
 	;
 
 	public static readonly System.Random rnd = new System.Random((int)DateTime.Now.Ticks);
-	public static bool MousePointer = false;
+	public static bool MousePointer
+#if UT_MOUSE
+	= true;
+#else
+	= false;
+#endif
 
 	// Utilities
 
