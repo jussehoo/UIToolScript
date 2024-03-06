@@ -369,6 +369,7 @@ public class Sequence : MonoBehaviour
 				callback.Invoke(timeLeft / totalTime);
 				return true;
 			}
+			callback.Invoke(0);
 			return false;
 		}
 	}

@@ -90,7 +90,8 @@ public class UT
 #if SERVER
 			System.Diagnostics.Debug.Assert(false,"ASSERTION FAILED: " + msg);
 #else
-			UnityEngine.Assertions.Assert.IsTrue(false, msg);
+			//UnityEngine.Assertions.Assert.IsTrue(false, msg);
+			Error(msg);
 #endif
 		}
 	}
