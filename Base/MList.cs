@@ -172,8 +172,10 @@ public class MList<T>
 		tail; // last node, containing real data
 	
 	// TODO: iterator for internal use to prevent 'new' calls
-
+	
 	public MList() { head = new MListNode<T>(); tail = null; }
+	public MList(T[]src) { head = new MListNode<T>(); tail = null; Append(src); }
+
 	public MListEnumerator<T> GetEnumerator() {	return new MListEnumerator<T>(this); }
 	public MListIterator<T> Iterator() { return new MListIterator<T>(this, head, state); }
 	public T First() { return head.Next.value; }
@@ -303,6 +305,13 @@ public class MList<T>
 		var it = Iterator();
 		while (index-- >= 0) it.Next();
 		it.Remove();
+	}
+	public void Append(T[] src)
+	{
+		foreach(var x in src)
+		{
+			AddLast(x);
+		}
 	}
 	public T[] ToArray()
 	{

@@ -49,6 +49,17 @@ public static class Util
 		if (value > maxInclusive) return maxInclusive;
 		return value;
 	}
+	public static void Shuffle<T> (T [] array)
+    {
+        int n = array.Length;
+        while (n > 1) 
+        {
+            int k = UT.RandomInt(n--);
+            T temp = array[n];
+            array[n] = array[k];
+            array[k] = temp;
+        }
+    }
 	
 	public const int SEC_IN_MIN = 60;
 	public const int MIN_IN_HOUR = 60;
