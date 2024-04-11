@@ -40,7 +40,7 @@ public class UT
 	public static float RandomFloat() { return (float)rnd.NextDouble(); }
 	public static float RandomFloat(float multiplier) { return (float)rnd.NextDouble() * multiplier; }
 	public static int RandomInt() { return rnd.Next(); }
-	internal static int RandomInt(int ceil) { return rnd.Next(ceil); }
+	internal static int RandomInt(int exclusiveCeil) { return rnd.Next(exclusiveCeil); }
 
 	public static void Trap(string msg = "")
 	{
