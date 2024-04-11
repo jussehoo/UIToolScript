@@ -60,6 +60,11 @@ public static class Util
             array[k] = temp;
         }
     }
+	internal static float Pulse(float time, float mul = 1f, float offset = 1.5f)
+	{
+		// return pulse value 0...1. offset = 1.5 -> time 0 returns 0
+		return (1f + Mathf.Sin((time + offset) * mul * Mathf.PI)) / 2f;
+	}
 	
 	public const int SEC_IN_MIN = 60;
 	public const int MIN_IN_HOUR = 60;
