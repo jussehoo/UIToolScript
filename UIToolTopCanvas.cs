@@ -56,7 +56,7 @@ public class UIToolTopCanvas : Singleton<UIToolTopCanvas>
 		}
 		else
 		{
-			floaterOffset -= FloaterPrefab.GetComponent<RectTransform>().sizeDelta.y / 2f;
+			floaterOffset -= FloaterPrefab.GetComponent<RectTransform>().sizeDelta.y * .2f;
 		}
 
 		floaterLastTime = Time.time;

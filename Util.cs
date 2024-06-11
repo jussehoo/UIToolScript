@@ -248,6 +248,20 @@ public static class Util
 		temp.y -= canvas.sizeDelta.y * canvas.pivot.y;
 		return temp;
 	}
+	internal static Vector2 CanvasToScreenPosition(Transform canvasPosition, Canvas canvas)
+	{
+		// returns objects position (pivot) on canvas as screen pixels
+		
+		var pos = canvasPosition.GetComponent<RectTransform>().anchoredPosition;
+		var rt = canvas.GetComponent<RectTransform>();
+		Vector2 temp = new Vector2(rt.sizeDelta.x, rt.sizeDelta.y);
+		temp.x -= rt.sizeDelta.x * rt.pivot.x;
+		temp.y -= rt.sizeDelta.y * rt.pivot.y;
+		temp += pos;
+		temp *= canvas.scaleFactor;
+
+		return temp;
+	}
 	public static Rect GetWorldRect(RectTransform rectTransform)
 	{
 		Vector3[] corners = new Vector3[4];
@@ -390,4 +404,5 @@ public static class Util
 		}
 		return null;
 	}
+
 }

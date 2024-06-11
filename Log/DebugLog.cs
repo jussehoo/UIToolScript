@@ -77,6 +77,7 @@ public class DebugLog : MonoBehaviour
 		if (entry.Condition.Length > MAX_LENGTH) cleaned = entry.Condition.Substring(0, MAX_LENGTH) + "...";
 		else cleaned = entry.Condition;
 		cleaned = cleaned.Replace("\n", "");
+		cleaned = cleaned.Replace("\r", "");
 		return tag + cleaned + "</color>";
 	}
 	public string GetCompact(int num = -1)
@@ -87,16 +88,7 @@ public class DebugLog : MonoBehaviour
 		{
 			n--;
 			if (num > 0 && n >= num) continue; // print only 'num' last
-
-			//s.AppendLine(entry.Type.ToString());
-			if (entry.Type == LogType.Error)
-			{
-			}
-			else
-			{
-				s.AppendLine(CompactEntryTitle(entry, false));
-			}
-			//s.AppendLine(entry.StackTrace);
+			s.AppendLine(CompactEntryTitle(entry, false));
 		}
 		return s.ToString();
 	}

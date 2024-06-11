@@ -50,6 +50,10 @@ public class Sequence : MonoBehaviour
 	{
 		list.AddLast(new ImageColorLerp(this, image, from, to, time));
 	}
+	public void AddTextColorLerp(TMPro.TextMeshProUGUI text, Color from, Color to, float time)
+	{
+		list.AddLast(new TextColorLerp(this, text, from, to, time));
+	}
 	public void AddCallback(Action a)
 	{
 		list.AddLast(new Callback(this, a));
@@ -347,6 +351,33 @@ public class Sequence : MonoBehaviour
 				return true;
 			}
 			image.color = to;
+			return false;
+		}
+	}
+
+	private class TextColorLerp : IClip
+	{
+		TMPro.TextMeshProUGUI text;
+		Color from, to;
+		public TextColorLerp(Sequence seq, TMPro.TextMeshProUGUI _text, Color _from, Color _to, float time) : base(seq, time)
+		{
+			text = _text;
+			from = _from;
+			to = _to;
+		}
+		public override void Init()
+		{
+			text.color = from;
+		}
+
+		public override bool Step()
+		{
+			if (UpdateTimer())
+			{
+				text.color = Color.Lerp(from, to, (totalTime - timeLeft) / totalTime);
+				return true;
+			}
+			text.color = to;
 			return false;
 		}
 	}
