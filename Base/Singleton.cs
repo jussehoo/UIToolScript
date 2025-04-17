@@ -29,7 +29,7 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
 			{
 				if (m_Instance == null)
 				{
-					m_Instance = (T)FindObjectOfType(typeof(T));
+					m_Instance = Object.FindFirstObjectByType<T>();
 					if (m_Instance == null)
 					{
 						var singletonObject = new GameObject();
